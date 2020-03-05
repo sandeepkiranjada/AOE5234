@@ -17,11 +17,21 @@ clear all; close all; clc;
 % Gravitational parameter
 mu = 3.986e14; 
 
+epsilon = @(xn,xl) norm(xn-xl)/norm(xl); % function computing epsilon.
+
+%% 
+Npts = 20;
+eps_vec = [];
+base_pow = linspace(1,4,Npts);
+baseline_length = 10.^base_pow;
+
+for nn=1:Npts
+
 %% Set up Chief orbit with orbital elements
-caseNum   = 'Case 1';
+caseNum   = 'Case 2';
 if strcmp(caseNum,'Case 1') == 1
     a      = 7000e3;
-    ecc    = 0.2;
+    ecc    = 0.0;
     inc    = 45*pi/180;
     raan   = pi/6;
     argper = pi/6;
@@ -76,9 +86,9 @@ t = linspace(t0,tf,N);
 eccFactor = -n*(2+ecc)/(sqrt((1+ecc)*(1-ecc)^3));
 
 % Relative offsets from Chief (meters)
-x0 = -300;
-y0 = -300;
-z0 = 100;
+x0 = baseline_length(nn)/sqrt(3);
+y0 = baseline_length(nn)/sqrt(3);
+z0 = baseline_length(nn)/sqrt(3);
 
 % Relative velocities from Chief (meters/second)
 xd0 = 0;
@@ -99,18 +109,17 @@ options = odeset('RelTol',3e-12,'AbsTol',1e-15,'Stats','on');
 % Nonlinear Equations (NERM)
 [T2,XN] = ode113(@NonlinearFormationFlyingEquations,t,XT_INIT,options,mu,a,ecc);
 
-% Plot nice pretty picture
-figure(1)
-hold on
-grid on
-plot3(XL(:,1),XL(:,2),XL(:,3),'k','LineWidth',2)
-plot3(XN(:,1),XN(:,2),XN(:,3),'bo','MarkerSize',6)
-plot3(0,0,0,'r.','MarkerSize',26)
-plot3(x0,y0,z0,'m.','MarkerSize',26)
-leg1 = legend('Linear','Nonlinear','Chief','$X_0$','Location','Best');
-title1 = title('Linear and Nonlinear Relative Motion Simulation');
-xl = xlabel('Radial, $x$, m');
-yl = ylabel('In-Track, $y$, m');
-zl = zlabel('Cross-Track, $z$, m');
-set([title1 xl yl zl leg1],'interpreter','latex','fontsize',12)
-axis tight
+%% Epsilon Calc
+
+eps_vec = [eps_vec,epsilon(XN,XL)];
+
+end
+figure
+plot(baseline_length,eps_vec)
+xlabel('Baseline length')
+ylabel('Error, \epsilon')
+
+figure
+plot(base_pow,eps_vec)
+xlabel('Order of Magnitude of Baseline length')
+ylabel('Error, \epsilon')

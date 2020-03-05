@@ -17,18 +17,26 @@ clear all; close all; clc;
 % Gravitational parameter
 mu = 3.986e14; 
 
+epsilon = @(xn,xl) norm(xn-xl)/norm(xl); % function computing epsilon.
+
+%% 
+Npts = 20;
+eps_vec = [];
+evec = linspace(0,0.9,Npts);
+for nn=1:Npts
+
 %% Set up Chief orbit with orbital elements
-caseNum   = 'Case 1';
+caseNum   = 'Case 2';
 if strcmp(caseNum,'Case 1') == 1
     a      = 7000e3;
-    ecc    = 0.2;
+    ecc    = 0.0;
     inc    = 45*pi/180;
     raan   = pi/6;
     argper = pi/6;
     f0     = 0;
 elseif strcmp(caseNum,'Case 2') == 1
     a      = 15000e3;
-    ecc    = 0.4;
+    ecc    = evec(nn);
     inc    = 45*pi/180;
     raan   = pi/6;
     argper = pi/6;
@@ -99,18 +107,12 @@ options = odeset('RelTol',3e-12,'AbsTol',1e-15,'Stats','on');
 % Nonlinear Equations (NERM)
 [T2,XN] = ode113(@NonlinearFormationFlyingEquations,t,XT_INIT,options,mu,a,ecc);
 
-% Plot nice pretty picture
-figure(1)
-hold on
-grid on
-plot3(XL(:,1),XL(:,2),XL(:,3),'k','LineWidth',2)
-plot3(XN(:,1),XN(:,2),XN(:,3),'bo','MarkerSize',6)
-plot3(0,0,0,'r.','MarkerSize',26)
-plot3(x0,y0,z0,'m.','MarkerSize',26)
-leg1 = legend('Linear','Nonlinear','Chief','$X_0$','Location','Best');
-title1 = title('Linear and Nonlinear Relative Motion Simulation');
-xl = xlabel('Radial, $x$, m');
-yl = ylabel('In-Track, $y$, m');
-zl = zlabel('Cross-Track, $z$, m');
-set([title1 xl yl zl leg1],'interpreter','latex','fontsize',12)
-axis tight
+%% Epsilon Calc
+
+eps_vec = [eps_vec,epsilon(XN,XL)];
+
+end
+
+plot(evec,eps_vec)
+xlabel('Eccentricity of the Chief, e')
+ylabel('Error, \epsilon')
