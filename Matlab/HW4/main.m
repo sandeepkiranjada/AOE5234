@@ -31,6 +31,8 @@ plot(t,y(:,[1:2]));hold on;
 plot(t,cos(w1.*t));hold on;
 plot(t,cos(w2.*t));hold on;
 legend('psi1','psi2','test1','test2')
-% figure;
-% plot(t,y(:,[3:4]))
-% legend
+figure;
+plot(t,y(:,[3:4]));hold on;
+plot(t,-0.002*sin(w1.*t));hold on;
+plot(t,-0.002*sin(w2.*t));hold on;
+legend('psi1','psi2','test1','test2')
