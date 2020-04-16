@@ -12,8 +12,8 @@ rp = a*(1-e);                   % Radius of periapsis [m]
 hp = rp-Re;                     % Perigee height [m]
 hp0 = r_p0-Re;
 %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
-[~,H_p0,~,~] = atmosphere(hp0*1e-3);      % Input perigee altitude in km
-[~,H_p,~,~] = atmosphere(hp*1e-3);      % Input perigee altitude in km
+[~,H_p0,~,~] = atmosphere_gurfil(hp0*1e-3);      % Input perigee altitude in km
+[~,H_p,~,~] = atmosphere_gurfil(hp*1e-3);      % Input perigee altitude in km
 rho = rho_p0*exp((r_p0-rp)/(H_p0*1e3));
 % %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
 % rho = rho_p0*exp((r_p0-rp)/Hp);
