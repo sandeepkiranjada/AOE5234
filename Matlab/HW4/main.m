@@ -1,4 +1,5 @@
 clc; close all; clear;
+format long
 
 A = 1.29*1e6; % Kg m^2
 B = 9.68*1e6; % Kg m^2
@@ -7,7 +8,7 @@ T_orb = 90*60; % Sec
 
 Omega = 2*pi*(1/T_orb);
 
-psi3 = sqrt(3*Omega^2*(B-A)/C);
+w3 = sqrt(3*Omega^2*(B-A)/C)
 
 %% Dynamics of psi1 and psi2
 % X = [psi1 psi2 psi1_dot psi2_dot]
@@ -18,8 +19,8 @@ Sys_mat = [0 0 1 0;...
            0  -4*(C-A)*Omega^2/B  -(B+A-C)*Omega/B  0];
        
 e = eig(Sys_mat);
-w1 = imag(e(1));
-w2 = imag(e(3));
+w1 = imag(e(1))
+w2 = imag(e(3))
 tspan = [0 10000];
 
 y0 = [0.1 1 0 0];
