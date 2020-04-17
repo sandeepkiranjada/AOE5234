@@ -55,10 +55,11 @@ for idx = 1:length(AMRvec)
     H0 = sqrt(a0*mu*(1-e0^2));                  % Initial angular momentum
     
     %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
-    [rho_0,H_p0,h_p0,rho_p0] = atmosphere_gurfil(hp0*1e-3);  % Input perigee altitude in km
-    r_p0 = (h_p0*1e3)+Re;
+    [rho_p0,H_p0] = atmosphere_gurfil(hp0*1e-3);  % Input perigee altitude in km
+    r_p0 = (hp0)+Re;
     H_p0 = H_p0*1e3;
-    
+%     rho_0r
+    rho_p0
     %%% Define initial conditions
     Hvec0 = H0*[sin(raan0)*sin(i0) -cos(raan0)*sin(i0) cos(i0)]';
     evec0 = e0*[(cos(argp0)*cos(raan0)-cos(i0)*sin(argp0)*sin(raan0)) ...
