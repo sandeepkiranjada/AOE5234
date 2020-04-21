@@ -11,7 +11,7 @@ a = H^2/(mu*(1-e^2));           % Keplerian semi-major axis
 rp = a*(1-e);                   % Radius of periapsis [m]
 hp = rp-Re;                     % Perigee height [m]
 hp0 = r_p0-Re;
-H
+r_p0
 %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
 [~,H_p] = atmosphere_gurfil(hp*1e-3)      % Input perigee altitude in km
 rho = rho_p0*exp((r_p0-rp)/(H_p*1e3));
@@ -28,7 +28,7 @@ K2 = (3*e^2-4*e-3)/(8*z*(1-e^2));
 
 %%% Differential equations for angular momentum (H) and eccentricity vector (e)
 dHvec = -0.5*B*sqrt(mu*(1-e^2)/(2*a*pi*z))*rho*(1+K1)*Hvec;
-devec = -B*((1+e)/(a*sqrt(2*pi*z)))*rho*(1+K2)*H*evec;
+devec = -B*((1+e)/(a*sqrt(2*pi*z)))*rho*(1+K2)*H*evec./e;
 
 %%% Save differential equations to output variable for function
 dxdt = [dHvec;devec];

@@ -19,7 +19,7 @@ f.Units = 'centimeters';
 plot(t_plot,a*1e-3,str,'linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('a (km)');
 xlim([0 no_yrs]);
-ylim([1.6e4 2.5e4]);
+% ylim([1.6e4 2.5e4]);
 % axis equal
 % axis([-2 2 -2 2]);
 
@@ -29,7 +29,7 @@ f.Units = 'centimeters';
 plot(t_plot,e,str,'linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('e ');
 xlim([0 no_yrs]);
-ylim([0.58 0.74]);
+% ylim([0.58 0.74]);
 
 f = figure(count + 3);
 f.Units = 'centimeters';
