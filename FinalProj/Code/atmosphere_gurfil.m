@@ -6,8 +6,8 @@ function [rho,H] = atmosphere_gurfil(h)
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 %...Handle altitudes outside of the range:
-if h > 600
-    h = 600;
+if h > 500
+    h = 500;
 elseif h < 200
     h = 200;
 end
