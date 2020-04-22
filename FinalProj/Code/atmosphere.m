@@ -48,5 +48,5 @@ density = r(i)*exp(-(z - h(i))/H(i));
 H = H(i);
 h = h(i);
     
-end  %atmopshere
+end  %atmosphere
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

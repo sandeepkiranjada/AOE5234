@@ -36,7 +36,6 @@ beta = 1/(H_p0);                       % Inverse of scale height [1/m]
 % figure(1)
 % plot(rho,'o'); hold on;
 
-% check = [rp; a; e; rho]
 % check = [rp; a; e; rho; H_p];
 
 %%% Compute for Bessel coefficients

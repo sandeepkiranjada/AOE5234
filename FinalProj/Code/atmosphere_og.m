@@ -4,7 +4,10 @@ function [ density , H ] = atmosphere_og(z)
 % ATMOSPHERE calculates density for altitudes from sea level
 % through 1000 km using exponential interpolation.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
+
+%...Convert input altitude to km
+z = z*1e-3;
+
 %...Geometric altitudes (km):
 h = ...
 [  0  25  30  40  50  60   70 ...
@@ -33,6 +36,8 @@ elseif z < 0
     z = 0;
 end
  
+z
+
 %...Determine the interpolation interval:
 for j = 1:27
     if z >= h(j) && z < h(j+1)
@@ -45,7 +50,7 @@ end
 
 %...Exponential interpolation:
 density = r(i)*exp(-(z - h(i))/H(i));
-H = H(i);
+H = H(i)*1e3;
 
 end  %atmopshere
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

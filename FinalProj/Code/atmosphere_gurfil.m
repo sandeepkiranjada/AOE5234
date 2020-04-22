@@ -5,6 +5,9 @@ function [rho,H] = atmosphere_gurfil(h)
 % through 1000 km using exponential interpolation.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+%...Convert input altitude to km
+h = h*1e-3;
+
 %...Handle altitudes outside of the range:
 if h > 500
     h = 500;
@@ -20,6 +23,9 @@ X= [200 250 300 350 400 500];
 Y = [38.70 41.38 44.37 47.82 51.87 62.40];
 
 H = interp1(X,Y,h,'spline');
+
+%...Convert output scale height H to m:
+H = H*1e3;
 
 % H = -1/log(10)/(1.4145e-5*h-5.544e-3);
 % H = 41.38;

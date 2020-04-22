@@ -7,17 +7,23 @@ clear
 close all
 flag_save = 0;
 
+global mu Re
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               Numerical integration parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-no_yrs = 10;
+no_yrs = 1;
 tf = no_yrs*(365*(24*(60*60)));
 tspan = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
+% options = odeset('RelTol',1e-12,'AbsTol',1e-12,'Events',@myEvent);
 
 AMRvec = [0.02  0.02  0.02  0.02  0.01  0.005];     % S/m: Area to mass ratio of the spacecraft [m^2/kg]
 ha0vec = [35943 20000 10000 35943 35943 35943]*1e3; % Initial apogee height [m]
+% AMRvec = [0.05  0.02  0.02  0.02  0.01  0.005];     % S/m: Area to mass ratio of the spacecraft [m^2/kg]
+% ha0vec = [25000 20000 10000 35943 35943 35943]*1e3; % Initial apogee height [m]
+format longg
 
 for idx = 1%:length(AMRvec)
     
@@ -29,7 +35,7 @@ for idx = 1%:length(AMRvec)
     AMR = AMRvec(idx);                          % S/m: Area to mass ratio of the spacecraft [m^2/kg]
     delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
     we = 7.2921159e-5;                          % Angular velocity of the earth [rad/s]
-    wa = we;0.2*we;                             % Angular velocity of the atmosphere in z-direction [rad/s]
+    wa = 0;we;0.2*we;                           % Angular velocity of the atmosphere in z-direction [rad/s]
     xhat = [1;0;0];                             % Inertial X-direction
     yhat = [0;1;0];                             % Inertial Y-direction
     zhat = [0;0;1];                             % Inertial Z-direction
@@ -54,26 +60,29 @@ for idx = 1%:length(AMRvec)
     
     H0 = sqrt(a0*mu*(1-e0^2));                  % Initial angular momentum
     
-    %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
-    [rho_p0,H_p0] = atmosphere_og(hp0*1e-3);          % Input perigee altitude in km
+    %% Compute for atmospheric density (perigee altitude must be < 1000 km)
+	% [rho_p0,H_p0] = atmosphere_og(hp0);          % Input perigee altitude
+    [rho_p0,H_p0] = atmosphere_gurfil(hp0);          % Input perigee altitude
     % [rho_0,H_p0,h_p0,rho_p0] = atmosphere(hp0*1e-3);  % Input perigee altitude in km
     % r_p0 = (h_p0*1e3)+Re;                             % Initial perigee radius [m]
-    H_p0 = H_p0*1e3;                                  % Initial scale height [m]
+    % H_p0 = H_p0*1e3;                                  % Initial scale height [m]
     
     %%% Define initial conditions
     Hvec0 = H0*[sin(raan0)*sin(i0) -cos(raan0)*sin(i0) cos(i0)]';
     evec0 = e0*[(cos(argp0)*cos(raan0)-cos(i0)*sin(argp0)*sin(raan0)) ...
-        (cos(argp0)*sin(raan0)+cos(i0)*sin(argp0)*cos(raan0)) ...
-        (sin(argp0)*sin(i0))]';
+                (cos(argp0)*sin(raan0)+cos(i0)*sin(argp0)*cos(raan0)) ...
+                (sin(argp0)*sin(i0))]';
     x0 = [Hvec0;evec0];
+    
+    check = [rp0;a0;e0;rho_p0;H_p0];
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                           Numerically integrate equations of motion
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%% Numerically integrate equations of motion
-    [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,mu,delta,wa,zhat,Re,rho_p0,rp0,H_p0),tspan,x0,options); flag = 0;
-%     [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,H_p0),tspan,x0,options); flag = 1;
+    [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,delta,wa,zhat,rho_p0,rp0,H_p0),tspan,x0,options); flag = 0;
+%     [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rp0,rho_p0,H_p0),tspan,x0,options); flag = 1;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                       Convert results of integration to Keplerian elements
@@ -107,7 +116,7 @@ for idx = 1%:length(AMRvec)
     %                                         Plot results
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-%     project_plotting
+    project_plotting
     
 end
 
@@ -148,3 +157,23 @@ if flag_save == 1
 else
 end
 % %}
+
+
+function [value, isterminal, direction] = myEvent(~, x)
+
+global mu Re
+
+%%% Define e from results of integration step
+H = norm([x(1) x(2) x(3)]);     % Magnitude of angular momentum  
+e = norm([x(4) x(5) x(6)]);     % Eccentricity
+
+%%% Define other parameters in terms of state
+a = H^2/(mu*(1-e^2));           % Semi-major axis [m]
+rp = a*(1-e);                   % Perigee radius [m]
+hp = rp-Re;                     % Perigee altitude [m]
+
+value      = (hp <= 0);
+isterminal = 1;   % Stop the integration
+direction  = 0;
+
+end
