@@ -13,12 +13,12 @@ PC = DE430Coeff;
 
 Mjd_UTC = Mjday(2015, 01, 01, 00, 00, 00);
 
-Step   = 60;   % [s]
-N_Step = 5256000; % 10 years
-num = fix(N_Step*Step/86400)+50;
-JD = Mjd_UTC+2400000.5;
-i_PC = find(PC(:,1)<=JD & JD<=PC(:,2),1,'first');
-PC = PC(i_PC:i_PC+num,:);
+% Step   = 60;   % [s]
+% N_Step = 5256000; % 10 years
+% num = fix(N_Step*Step/86400)+50;
+% JD = Mjd_UTC+2400000.5;
+% i_PC = find(PC(:,1)<=JD & JD<=PC(:,2),1,'first');
+% PC = PC(i_PC:i_PC+num,:);
 % mjd = (floor(Mjd_UTC));
 % i_epo = find(mjd==eopdata(4,:),1,'first');
 % eopdata = eopdata(:,i_epo:i_epo+num);
