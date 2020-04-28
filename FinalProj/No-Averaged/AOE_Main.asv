@@ -6,7 +6,6 @@ global PC eopdata
 drag_flag = 1;
 J2_flag = 1;
 Lunisolar_flag = 1;
-
 %% Load Global data 
 fid = fopen('eop19620101.txt','r');
 eopdata = fscanf(fid,'%i %d %d %i %f %f %f %f %f %f %f %f %i',[13 inf]);
@@ -14,7 +13,7 @@ fclose(fid);
 load DE430Coeff.mat
 PC = DE430Coeff;
 
-Mjd_UTC = Mjday(2015, 01, 01, 00, 00, 00);
+Mjd_UTC = Mjday(2015, 01, 02, 00, 00, 00);
 
 % Step   = 60;   % [s]
 % N_Step = 5256000; % 10 years
@@ -71,10 +70,9 @@ rho = rho_p.*exp((r_p0-rmag)./(H_rho));
 %% Regenerating COE
 [ecc_pk,a_pk,incl_pk,omega_pk,argp_pk,nu_pk,p_pk,eps_pk] = rv2coe4vec(x(:,1:3),x(:,4:6),muu);
 [ecc_p,a_p,incl_p,omega_p,argp_p,nu_p,p_p,eps_p]         = rv2coe4vec(x(:,7:9),x(:,10:12),muu);
-r_pk=a_pk.*(1-ecc_pk);
+h_pk
 r_p=a_p.*(1-ecc_p);
 h_p=r_p-re;
-h_pk=r_pk-re;
 
 incl_pk=rad2deg(incl_pk);     incl_p=rad2deg(incl_p);
 omega_pk=rad2deg(omega_pk);   omega_p=rad2deg(omega_p);
@@ -92,7 +90,7 @@ xlim([0 no_yrs]);
 
 figure
 plot(t_plot,h_pk/1e3,'b',t_plot,h_p/1e3,'r','linewidth',1); grid on; hold on
-xlabel('Elapsed time (yrs)'); ylabel('Perigee Height (km)');
+xlabel('Elapsed time (yrs)'); ylabel('a (km)');
 xlim([0 no_yrs]);
 
 figure
