@@ -3,6 +3,9 @@ clc
 close all
 
 global PC eopdata
+drag_flag = 1;
+J2_flag = 1;
+Lunisolar_flag = 1;
 
 %% Load Global data 
 fid = fopen('eop19620101.txt','r');
@@ -58,7 +61,7 @@ tf      = no_yrs*(365*(24*(60*60)));
 tspan   = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
 x0      = [r0;v0;r0;v0];
-[t,x] = ode113(@(t,x) NA_orbit(t,x,AMR,C_D,r_p0,rho_p,re,H_rho,muu,J2,Mjd_UTC),tspan,x0,options); 
+[t,x] = ode113(@(t,x) NA_orbit(t,x,AMR,C_D,r_p0,rho_p,re,H_rho,muu,J2,Mjd_UTC,drag_flag,J2_flag,Lunisolar_flag),tspan,x0,options); 
 rmag_k = (sum(x(:,1:3).^2,2)).^(1/2);
 rmag   = (sum(x(:,7:9).^2,2)).^(1/2);
 vmag_k = (sum(x(:,4:6).^2,2)).^(1/2);
@@ -68,6 +71,10 @@ rho = rho_p.*exp((r_p0-rmag)./(H_rho));
 %% Regenerating COE
 [ecc_pk,a_pk,incl_pk,omega_pk,argp_pk,nu_pk,p_pk,eps_pk] = rv2coe4vec(x(:,1:3),x(:,4:6),muu);
 [ecc_p,a_p,incl_p,omega_p,argp_p,nu_p,p_p,eps_p]         = rv2coe4vec(x(:,7:9),x(:,10:12),muu);
+r_pk=a_pk.*(1-ecc_pk);
+r_p=a_p.*(1-ecc_p);
+h_p=r_p-re;
+h_pk=r_pk-re;
 
 incl_pk=rad2deg(incl_pk);     incl_p=rad2deg(incl_p);
 omega_pk=rad2deg(omega_pk);   omega_p=rad2deg(omega_p);
@@ -81,6 +88,11 @@ t_plot = (((t/60)/60)/24)/365;
 figure
 plot(t_plot,a_pk/1e3,'b',t_plot,a_p/1e3,'r','linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('a (km)');
+xlim([0 no_yrs]);
+
+figure
+plot(t_plot,h_pk/1e3,'b',t_plot,h_p/1e3,'r','linewidth',1); grid on; hold on
+xlabel('Elapsed time (yrs)'); ylabel('Perigee Height (km)');
 xlim([0 no_yrs]);
 
 figure
