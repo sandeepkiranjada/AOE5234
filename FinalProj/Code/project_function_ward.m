@@ -17,9 +17,14 @@ hp = rp-Re;                     % Perigee altitude [m]
 inc = acos(dot(zhat,Hhat));     % Inclination [rad]
 % hp
 
+% %%% (A) H_p0 is constant
+% %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
+% rho = rho_p0*exp((rp0-rp)/(H_p0));
+% beta = 1/(H_p0);                       % Inverse of scale height [1/m]
+
 %%% (A) H_p0 is constant
 %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
-rho = rho_p0*exp((rp0-rp)/(H_p0));
+rho = rho_p0*exp((rp0-a)/(H_p0));
 beta = 1/(H_p0);                       % Inverse of scale height [1/m]
 
 % %%% (B) H_p0 changes with perigee height
@@ -52,14 +57,14 @@ c2 = 2*beta*a*(1-e^2);
 c3 = 0.5*(1-e^2)*(I0-I2)*dot(ehat,zhat)*ehatperp;
 
 %%% Terms needed for the differential equations
-dH = -((delta*rho*H^2)/a)*(I0+e/(2*beta*a*(1-e^2))*I1-(2*wa*a^2*cos(inc)/H)*((1+e^2)*I0-2*e*I1));
+dH = -((delta*rho*H^2)/a)*(I0 + e/(2*beta*a*(1-e^2))*I1 - (2*wa*a^2*cos(inc)/H)*((1+e^2)*I0-2*e*I1));
 dHhat = delta*rho*wa*a*cross(c1,Hhat);
-de = -2*(delta*rho*H/a)*((1-(2-e^2)/c2)*I1+(1-1/c2)*e*I0-((2*wa*a^2*(1-e^2)*cos(inc))/H)*(I1-e*I0));
+de = -2*(delta*rho*H/a)*((1-(2-e^2)/c2)*I1 + (1-1/c2)*e*I0 - ((2*wa*a^2*(1-e^2)*cos(inc))/H)*(I1-e*I0));
 dehat = -delta*rho*wa*a*cross(c3,Hhat);
 
 %%% Differential equations for angular momentum (H) and eccentricity vector (e)
-dHvec = dH*Hhat+H*dHhat;
-devec = de*ehat+e*dehat;
+dHvec = dH*Hhat + H*dHhat;
+devec = de*ehat + e*dehat;
 
 %%% Save differential equations to output variable for function
 dxdt = [dHvec';devec'];
