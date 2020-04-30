@@ -15,34 +15,11 @@ a = H^2/(mu*(1-e^2));           % Semi-major axis [m]
 rp = a*(1-e);                   % Perigee radius [m]
 hp = rp-Re;                     % Perigee altitude [m]
 inc = acos(dot(zhat,Hhat));     % Inclination [rad]
-% hp
-
-% %%% (A) H_p0 is constant
-% %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
-% rho = rho_p0*exp((rp0-rp)/(H_p0));
-% beta = 1/(H_p0);                       % Inverse of scale height [1/m]
 
 %%% (A) H_p0 is constant
 %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
 rho = rho_p0*exp((rp0-a)/(H_p0));
 beta = 1/(H_p0);                       % Inverse of scale height [1/m]
-
-% %%% (B) H_p0 changes with perigee height
-% %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
-% [~,H_p] = atmosphere_og(hp);            % Input perigee altitude [km]
-% rho = rho_p0*exp((rp0-rp)/(H_p));       % Density at this instantaneous rp [m]
-% beta = 1/(H_p);                         % Inverse of scale height [1/m]
-
-% %%% (C) Just use  atmosphere_og.m
-% %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
-% [rho,H_p] = atmosphere_og(hp);           % Input perigee altitude [km]
-% beta = 1/(H_p*1e3);                      % Inverse of scale height [1/m]
-
-% figure(1)
-% plot(rho,'o'); hold on;
-
-% check = [rp; a; e; rho]
-% check = [rp; a; e; rho; H_p];
 
 %%% Compute for Bessel coefficients
 K = beta*a*e;
