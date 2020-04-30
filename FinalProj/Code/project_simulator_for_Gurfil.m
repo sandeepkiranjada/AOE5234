@@ -56,9 +56,9 @@ for idx = 1:length(AMRvec)
     H0 = sqrt(a0*mu*(1-e0^2));                  % Initial angular momentum
     
     %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
-    [rho_p0,H_p0] = atmosphere_gurfil(hp0*1e-3);  % Input perigee altitude in km
+    [rho_p0,H_p0] = atmosphere_gurfil(hp0);  % Input perigee altitude in m
     r_p0 = (hp0)+Re;
-    H_p0 = H_p0*1e3;
+%     H_p0 = H_p0*1e3;
 %     rho_0r
     rho_p0
     %%% Define initial conditions
@@ -68,13 +68,15 @@ for idx = 1:length(AMRvec)
         (sin(argp0)*sin(i0))]';
     x0 = [Hvec0;evec0];
     
+    avg_flag = 2; % 1 for singly averaged, 2 for doubly avegraged, and Guess What, 3 for triply averaged
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                           Numerically integrate equations of motion
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%% Numerically integrate equations of motion
 %     [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0),tspan,x0,options); flag = 0;
-    [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0),tspan,x0,options); flag = 1;
+    [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,avg_flag),tspan,x0,options); flag = 1;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                       Convert results of integration to Keplerian elements
