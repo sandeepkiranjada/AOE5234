@@ -13,7 +13,7 @@ addpath('./Gurfil_effects')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 no_yrs = 10;
-tf = no_yrs*(365*(24*(60*60)));
+tf = no_yrs*(365.25*(24*(60*60)));
 tspan = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
 
@@ -56,17 +56,29 @@ for idx = 1:length(AMRvec)
     H0 = sqrt(a0*mu*(1-e0^2));                  % Initial angular momentum
     
     %%% Compute for atmospheric density (perigee altitude must be < 1000 km)
-    [rho_p0,H_p0] = atmosphere_gurfil(hp0*1e-3);  % Input perigee altitude in km
+    [rho_p0,H_p0] = atmosphere_gurfil(hp0);  % Input perigee altitude in m
     r_p0 = (hp0)+Re;
-    H_p0 = H_p0*1e3;
+%     H_p0 = H_p0*1e3;
 %     rho_0r
     rho_p0
     %%% Define initial conditions
-    Hvec0 = H0*[sin(raan0)*sin(i0) -cos(raan0)*sin(i0) cos(i0)]';
-    evec0 = e0*[(cos(argp0)*cos(raan0)-cos(i0)*sin(argp0)*sin(raan0)) ...
-        (cos(argp0)*sin(raan0)+cos(i0)*sin(argp0)*cos(raan0)) ...
-        (sin(argp0)*sin(i0))]';
+    Hvec0_peri = [0 0 H0]';
+    evec0_peri = [e0 0 0]';
+    
+    R3 = @(x) [cos(x) -sin(x) 0; sin(x) cos(x) 0; 0 0 1]';
+    R1 = @(x) [1 0 0;0 cos(x) -sin(x);0 sin(x) cos(x)]';
+
+    R_pi = R3(-raan0)*R1(-i0)*R3(-argp0);
+    Hvec0 = R_pi * Hvec0_peri;
+    evec0 = R_pi * evec0_peri;
+    
+%     Hvec0 = H0*[sin(raan0)*sin(i0) -cos(raan0)*sin(i0) cos(i0)]';
+%     evec0 = e0*[(cos(argp0)*cos(raan0)-cos(i0)*sin(argp0)*sin(raan0)) ...
+%         (cos(argp0)*sin(raan0)+cos(i0)*sin(argp0)*cos(raan0)) ...
+%         (sin(argp0)*sin(i0))]';
     x0 = [Hvec0;evec0];
+    
+    avg_flag = 3; % 1 for singly averaged, 2 for doubly avegraged, and Guess What, 3 for triply averaged
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                           Numerically integrate equations of motion
@@ -74,7 +86,7 @@ for idx = 1:length(AMRvec)
     
     %%% Numerically integrate equations of motion
 %     [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0),tspan,x0,options); flag = 0;
-    [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0),tspan,x0,options); flag = 1;
+    [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,avg_flag),tspan,x0,options); flag = 1;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                       Convert results of integration to Keplerian elements

@@ -4,8 +4,8 @@ close all
 
 global PC eopdata
 drag_flag = 1;
-J2_flag = 1;
-Lunisolar_flag = 1;
+J2_flag = 0;
+Lunisolar_flag = 0;
 
 %% Load Global data 
 fid = fopen('eop19620101.txt','r');
@@ -56,7 +56,7 @@ AMR=0.02;  % Area to mass ratio
 
 %% Solving ODE
 
-no_yrs  = 10;
+no_yrs  = 1/12;
 tf      = no_yrs*(365*(24*(60*60)));
 tspan   = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
