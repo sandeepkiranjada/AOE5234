@@ -7,8 +7,8 @@ J2 = 1082.63e-6;
 %% Luni-Solar Constants
 inc = 23.44*pi/180;
 
-a_sun = 149597870700; % Mean value used, circular orbit assumption
-V_mean_earth = 29.78e3;
+a_sun = 1.495874268632075e11; % Mean value used, circular orbit assumption
+V_mean_earth = 29.785731561564607e3;
 H_sun_vec = V_mean_earth*a_sun.*[0 -sin(inc) cos(inc)]';
 H_sun_hat_vec = [0 -sin(inc) cos(inc)]';
 mu_sun = 1.32712440018e20;
