@@ -13,7 +13,7 @@ addpath('./Gurfil_effects')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 no_yrs = 10;
-tf = no_yrs*(365*(24*(60*60)));
+tf = no_yrs*(365.25*(24*(60*60)));
 tspan = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
 
@@ -62,13 +62,23 @@ for idx = 1:length(AMRvec)
 %     rho_0r
     rho_p0
     %%% Define initial conditions
-    Hvec0 = H0*[sin(raan0)*sin(i0) -cos(raan0)*sin(i0) cos(i0)]';
-    evec0 = e0*[(cos(argp0)*cos(raan0)-cos(i0)*sin(argp0)*sin(raan0)) ...
-        (cos(argp0)*sin(raan0)+cos(i0)*sin(argp0)*cos(raan0)) ...
-        (sin(argp0)*sin(i0))]';
+    Hvec0_peri = [0 0 H0]';
+    evec0_peri = [e0 0 0]';
+    
+    R3 = @(x) [cos(x) -sin(x) 0; sin(x) cos(x) 0; 0 0 1]';
+    R1 = @(x) [1 0 0;0 cos(x) -sin(x);0 sin(x) cos(x)]';
+
+    R_pi = R3(-raan0)*R1(-i0)*R3(-argp0);
+    Hvec0 = R_pi * Hvec0_peri;
+    evec0 = R_pi * evec0_peri;
+    
+%     Hvec0 = H0*[sin(raan0)*sin(i0) -cos(raan0)*sin(i0) cos(i0)]';
+%     evec0 = e0*[(cos(argp0)*cos(raan0)-cos(i0)*sin(argp0)*sin(raan0)) ...
+%         (cos(argp0)*sin(raan0)+cos(i0)*sin(argp0)*cos(raan0)) ...
+%         (sin(argp0)*sin(i0))]';
     x0 = [Hvec0;evec0];
     
-    avg_flag = 2; % 1 for singly averaged, 2 for doubly avegraged, and Guess What, 3 for triply averaged
+    avg_flag = 3; % 1 for singly averaged, 2 for doubly avegraged, and Guess What, 3 for triply averaged
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                           Numerically integrate equations of motion
