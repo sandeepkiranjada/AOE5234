@@ -34,6 +34,8 @@ if z > 1000
     z = 1000;
 elseif z < 0
     z = 0;
+elseif isnan(z)
+    z = 0;
 end
 
 %...Determine the interpolation interval:

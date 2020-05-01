@@ -6,14 +6,12 @@ global Re J2 mu_earth mu_sun mu_moon
 
 %%% Define H, Hhat, e, ehat from results of integration step
 H_vec = [x(1); x(2); x(3)];     % Angular momentum vector
-H = norm([x(1) x(2) x(3)]);     % Magnitude of angular momentum  
-Hhat = [x(1) x(2) x(3)]/H;      % Angular momentum unit vector
+H = norm(H_vec);                % Magnitude of angular momentum  
+Hhat = H_vec/H;                 % Angular momentum unit vector
 e_vec = [x(4); x(5); x(6)];     % Eccentricity vector
-e = norm([x(4) x(5) x(6)]);     % Eccentricity
-ehat = [x(4) x(5) x(6)]/e;      % Eccentricity unit vector
+e = norm(e_vec);                % Eccentricity
+ehat = e_vec/e;                 % Eccentricity unit vector
     
-    
-
 %%% Define other parameters in terms of the states
 a = H^2/(mu_earth*(1-e^2));     % Semi-major axis [m]
 rp = a*(1-e);                   % Perigee radius [m]
@@ -60,9 +58,6 @@ devec = de*ehat + e*dehat;
 
 if flag_J2 || flag_lunisolar
     
-    %%% Compute for current time in Julian days
-    jd = jd0 + t/36400;
-    
     %%% Define other parameters needed for differential equations
     h_vec = H_vec/sqrt(mu_earth*a);     % Scaled angular momentum vector [m]
     h = norm(h_vec);                    % Magnitude of scaled angular momentum vector [m]
@@ -82,29 +77,34 @@ if flag_J2 || flag_lunisolar
     
     if flag_lunisolar
         %
+        %%% Compute for current time in Julian days
+        jd = jd0 + t/86400;
+        %
         %%% Compute for unit vectors from Earth to the Sun and Moon
-        [r_s,~,~] = sun(jd);
-        [r_m,~,~] = moon (jd);
+        [r_s,~,~] = sun(jd);            % Ouputs r_sun in AU
+        [r_m,~,~] = moon(jd);           % Outputs r_moon in ER
+        AU2m = 149598073*1e3;
+        ER2m = Re;
+        r_s = r_s*AU2m;
+        r_m = r_m*ER2m;
         d_s = norm(r_s);
         d_m = norm(r_m);
-        d_shat = r_s/norm(r_s);
-        d_mhat = r_m/norm(r_m);
+        d_shat = r_s'/norm(r_s);
+        d_mhat = r_m'/norm(r_m);
         %
-        %%% Compute for third-body perturbation due to the Sun
-        dHvec_sun = (3*a^2*mu_sun)/(2*d_s^3)*(5*dot(d_shat,e_vec)*cross(e_vec,d_shat)-dot(d_shat,h_vec)*cross(h_vec,d_shat))
-%         devec_sun = 
+        %%% Compute for third-body perturbation due to the Sun and Moon
+        dHvec_sun =   (3*a^2*mu_sun)/(2*d_s^3)*(5*dot(d_shat,e_vec)*cross(e_vec,d_shat)-dot(d_shat,h_vec)*cross(h_vec,d_shat));
+        dHvec_moon = (3*a^2*mu_moon)/(2*d_m^3)*(5*dot(d_mhat,e_vec)*cross(e_vec,d_mhat)-dot(d_mhat,h_vec)*cross(h_vec,d_mhat));
+        devec_sun =   (3*mu_sun)/(2*n*d_s^3)*(5*dot(d_shat,e_vec)*cross(h_vec,d_shat)-dot(d_shat,h_vec)*cross(e_vec,d_shat)-2*cross(h_vec,e_vec));
+        devec_moon = (3*mu_moon)/(2*n*d_m^3)*(5*dot(d_mhat,e_vec)*cross(h_vec,d_mhat)-dot(d_mhat,h_vec)*cross(e_vec,d_mhat)-2*cross(h_vec,e_vec));
         %
-        %%% Compute for third-body perturbation due to the Moon
-%         dHvec_moon = 
-%         devec_moon =
-        %
-        %%% Compute for new dHvec, devec
-%         dHvec = dHvec + dHvec_sun + dHvec_moon;
-%         devec = devec + devec_sun + devec_moon;
+        %% Compute for new dHvec, devec
+        dHvec = dHvec + dHvec_sun + dHvec_moon;
+        devec = devec + devec_sun + devec_moon;
     end
 end
 
 %%% Save differential equations to output variable for function
-dxdt = [dHvec';devec'];
+dxdt = [dHvec;devec];
 
 end
