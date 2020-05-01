@@ -1,16 +1,16 @@
-function [ dxdt_lunisol ] = lunisolar(t,x,mu,~,~,~,~,avg_flag,Mjd_UTC_Epoch)
+function [ dxdt_lunisol ] = lunisolar(t,x,mu,~,~,~,~,avg_flag,M_sun_epoch,M_moon_epoch)
 %LUNISOLAR Summary of this function goes here
 %   Detailed explanation goes here
-global eopdata
+% global eopdata
 my_constants
-
-MJD_UTC = Mjd_UTC_Epoch+t/86400;
-[UT1_UTC,TAI_UTC] = IERS(eopdata,MJD_UTC,'l');
-[~,~, ~, TT_UTC, ~] = timediff(UT1_UTC,TAI_UTC);
-MJD_TT = MJD_UTC+TT_UTC/86400;
-MJD_TDB = Mjday_TDB(MJD_TT);
-
-[~,d_moon_vec_ECI,d_sun_vec_ECI] = JPL_Eph_DE430(MJD_TDB);
+% 
+% MJD_UTC = Mjd_UTC_Epoch+t/86400;
+% [UT1_UTC,TAI_UTC] = IERS(eopdata,MJD_UTC,'l');
+% [~,~, ~, TT_UTC, ~] = timediff(UT1_UTC,TAI_UTC);
+% MJD_TT = MJD_UTC+TT_UTC/86400;
+% MJD_TDB = Mjday_TDB(MJD_TT);
+% 
+% [~,d_moon_vec_ECI,d_sun_vec_ECI] = JPL_Eph_DE430(MJD_TDB);
 
 %%% Define H, Hhat, e, ehat from results of integration step
 H_vec = [x(1) x(2) x(3)]'; % Angular momentum  
@@ -24,17 +24,17 @@ h_vec = H_vec./sqrt(mu*a);
 n = sqrt(mu/a^3);
 
 
-% M_sun = M_sun_epoch + n_sun*t; % nu is M is E for circular orbit. t is since Epoch
-% nu_sun = M_sun;
-% d_sun_vec_peri = [r_sun*cos(nu_sun) r_sun*sin(nu_sun) 0]';
-% d_sun_vec_ECI = R_peri2ECI*d_sun_vec_peri;
+M_sun = M_sun_epoch + n_sun*t; % nu is M is E for circular orbit. t is since Epoch
+nu_sun = M_sun;
+d_sun_vec_peri = [r_sun*cos(nu_sun) r_sun*sin(nu_sun) 0]';
+d_sun_vec_ECI = R_peri2ECI*d_sun_vec_peri;
 d_sun_hat_vec_ECI = d_sun_vec_ECI/norm(d_sun_vec_ECI);
 
 
-% M_moon = M_moon_epoch + n_moon*t; % nu is M is E for circular orbit. t is since Epoch
-% nu_moon = M_moon;
-% d_moon_vec_peri = [r_moon*cos(nu_moon) r_moon*sin(nu_moon) 0]';
-% d_moon_vec_ECI = R_peri2ECI*d_moon_vec_peri;
+M_moon = M_moon_epoch + n_moon*t; % nu is M is E for circular orbit. t is since Epoch
+nu_moon = M_moon;
+d_moon_vec_peri = [r_moon*cos(nu_moon) r_moon*sin(nu_moon) 0]';
+d_moon_vec_ECI = R_peri2ECI*d_moon_vec_peri;
 d_moon_hat_vec_ECI = d_moon_vec_ECI/norm(d_moon_vec_ECI);
 
 
