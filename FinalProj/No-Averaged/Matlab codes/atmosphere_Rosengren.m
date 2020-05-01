@@ -4,7 +4,7 @@ function [ density , H ] = atmosphere_Rosengren(z)
 % ATMOSPHERE calculates density for altitudes from sea level
 % through 1000 km using exponential interpolation.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
+z=z/1000;    
 %...Geometric altitudes (km):
 h = ...
 [  0  25  30  40  50  60   70 ...
@@ -45,7 +45,7 @@ end
 
 %...Exponential interpolation:
 density = r(i)*exp(-(z - h(i))/H(i));
-H = H(i);
+H = H(i)*1000;
 
 end  %atmopshere
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

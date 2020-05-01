@@ -1,10 +1,12 @@
-function dx=NA_orbit(t,x,AMR,C_D,r_p0,rho_p,re,H_rho,muu,J2,Mjd_UTC,drag_flag,J2_flag,Lunisolar_flag)
+function dx=NA_orbit(t,x,AMR,C_D,r_p0,rho_p,re,H_rho,muu,J2,Mjd_UTC,drag_flag,J2_flag,Lunisolar_flag,atmo_rotation_flag)
 
 global PC eopdata
 
-
-W_earth = 7.292115e-5;         % Earth (atmoshere) angular rotation   
-% W_earth = 0;
+if atmo_rotation_flag
+    W_earth = 7.292115e-5;         % Earth (atmoshere) angular rotation
+else
+    W_earth = 0;
+end
 k       = [0;0;1];
 w_earth = W_earth*k;
 del     = 0.5*AMR*C_D;

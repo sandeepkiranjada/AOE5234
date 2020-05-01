@@ -28,8 +28,13 @@ if (interp =='l')
         preeop = eop(:,i);
         nexteop = preeop;
     elseif i_check == 1
-        preeop = eop(:,end);
-        nexteop = preeop;
+        if mjd < eop(4,1)
+            preeop = eop(:,1);
+            nexteop = preeop;
+        else
+            preeop = eop(:,end);
+            nexteop = preeop;
+        end
     end
 %     preeop = eop(:,i);
 %     nexteop = eop(:,i+1);
