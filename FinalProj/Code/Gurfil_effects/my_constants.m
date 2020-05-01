@@ -48,7 +48,7 @@ h_moon = norm(h_moon_vec);
 n_moon = sqrt(mu_earth/a_moon^3);
 
 
-mu_moon = 4.9048695e12;
+mu_moon = mu_earth/81.30056907419062; %4.9048695e12;
 
 %% Luni-Solar orbital elements
 

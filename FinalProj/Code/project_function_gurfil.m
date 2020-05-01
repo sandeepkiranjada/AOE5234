@@ -35,7 +35,7 @@ dxdt_lunisol = lunisolar(t,x,mu,delta,Re,rho_p0,r_p0,avg_flag,Mjd_UTC );
 dxdt_J2 = oblate( x,mu,delta,Re,rho_p0,r_p0 );
 
 %%% Save differential equations to output variable for function
-dxdt = dxdt_drag + dxdt_lunisol*0 + dxdt_J2;
+dxdt = dxdt_drag + dxdt_lunisol + dxdt_J2;
 % dxdt = dxdt_drag;
 
 end
