@@ -87,6 +87,7 @@ for idx = 1%:length(AMRvec)
     x0 = [Hvec0;evec0];
     
     avg_flag = 1; % 1 for singly averaged, 2 for doubly avegraged, and Guess What, 3 for triply averaged
+    drag_model = 1; % 1 for Gurfil and 2 for Ward
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                           Numerically integrate equations of motion
@@ -94,7 +95,7 @@ for idx = 1%:length(AMRvec)
     
     %%% Numerically integrate equations of motion
 %     [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0),tspan,x0,options); flag = 0;
-    [t_integrator,xx] = ode113(@(t,x) project_function(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,avg_flag,Mjd_UTC_Epoch),tspan,x0,options); flag = 1;
+    [t_integrator,xx] = ode113(@(t,x) project_function(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,avg_flag,drag_model,Mjd_UTC_Epoch),tspan,x0,options); flag = 1;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                       Convert results of integration to Keplerian elements
