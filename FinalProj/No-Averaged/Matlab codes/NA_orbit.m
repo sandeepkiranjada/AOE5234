@@ -15,6 +15,7 @@ rdot_k  = [x(4);x(5);x(6)];
 r       = [x(7);x(8);x(9)];
 rdot    = [x(10);x(11);x(12)];
 
+
 rhat_k  = r_k/norm(r_k);
 rhat    = r/norm(r);
 v_k     = norm(rdot_k);
@@ -27,8 +28,14 @@ a_drag=0; a_j2=0; a_LuniSolar=0;
 
 %%% Drag
 if drag_flag
+%  h       = norm(r)-re;          
+% [rho_p,H_rho] = atmosphere_gurfil(h);
+% [ rho_p , H_rho] = atmosphere_Rosengren(h);
 rho     = rho_p*exp((r_p0-norm(r))/(H_rho));                                           % Density
-a_drag  = 1*-(del)*rho*v*(1-dot(w_earth,H,1)/(v^2))*(rdot-cross(w_earth,r,1));         % Drag Perturbation
+% rho       = atmosphere_Rosengren_modified(h);
+% [norm(r)*1e-6 rho]
+a_drag  = 1*-(del)*rho*v*(1-dot(w_earth,H,1)/(v^2))*(rdot-cross(w_earth,r,1)) ;        % Drag Perturbation
+% [norm(r)*1e-6 norm(a_drag)]
 end
 
 %%% J2
