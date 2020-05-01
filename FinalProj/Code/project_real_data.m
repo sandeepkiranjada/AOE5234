@@ -18,9 +18,9 @@ model = 'SGP4';
 
 % noradID = '00049';      % Echo 1A (LEO)
 % noradID = '02253';      % PAGEOS-A (Polar)
-% noradID = '02324';      % PasComSat/OV1-8 (LEO)
+noradID = '02324';      % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      % Ariane 1
-noradID = '37239';      % Ariane 5 R/B
+% noradID = '37239';      % Ariane 5 R/B
 % noradID = '16657';      % Ariane 3 R/B
 % noradID = '19218';      % Ariane 44LP R/B
 filename = sprintf([ noradID '.txt']);
@@ -51,7 +51,8 @@ for idx = 1:length(jd)
 end
 clear jd UTC_time_scratch
 UTC_datetime = datetime(UTC_time);
-UTC_date
+UTC_datetime = UTC_datetime-UTC_datetime(1);
+time = datenum(UTC_datetime)/365.25;
 
 %
 % Convert TLE to [r,v] using SCT Toolbox
@@ -89,19 +90,22 @@ if flag_plot
     f.Position = [1 1 55 10];
     
     subplot(1,3,1);
-    plot(UTC_datetime,el(:,1),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
+    plot(time,el(:,1),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
     title('Semi-major Axis');
     ylabel('a [km]');
+    xlabel('In years mothafuckas');
     
     subplot(1,3,2);
-    plot(UTC_datetime,el(:,5),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
+    plot(time,el(:,5),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
     title('Eccentricity');
     ylabel('e');
+    xlabel('In years mothafuckas');
     
     subplot(1,3,3);
-    plot(UTC_datetime,rad2deg(el(:,2)),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
+    plot(time,rad2deg(el(:,2)),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
     title('Inclination');
     ylabel('i [^\circ]');
+    xlabel('In years mothafuckas');
 end
 
 %% Save images
