@@ -4,7 +4,7 @@
 
 clc
 clear
-close all
+% close all
 flag_save = 0;
 addpath('./Perturbations')
 addpath('./../No-Averaged/Matlab codes')
@@ -20,7 +20,7 @@ global PC eopdata
 %                               Numerical integration parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-no_yrs = 5;
+no_yrs = 4;
 tf = no_yrs*(365.25*(24*(60*60)));
 tspan = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
@@ -72,8 +72,8 @@ switch noradID
         e0 = 1-r_p0/a0;                             % Initial eccentricity
         i0 = deg2rad(6);                            % Initial inclination [rad]
         argp0 = deg2rad(178);                       % Initial argument of perigee [rad]
-        raan0 = deg2rad(60);                        % Initial RAAN
-        M0 = 0;                                     % Initial mean anomaly
+        raan0 = deg2rad(60);                        % Initial RAAN [rad]
+        M0 = 0;                                     % Initial mean anomaly [rad]
         %
         H0 = sqrt(a0*mu_earth*(1-e0^2));            % Initial angular momentum
         %
@@ -86,13 +86,13 @@ switch noradID
         %
         % Start date and time of simulation
         %
-        Mjd_UTC_Epoch = Mjday(2010,12,4,11,45,37.0653122663498);
+        Mjd_UTC_Epoch = Mjday(2010,11,28,9,8,13.2351440191269);
         % [a,i,W,w,e,M] a  inc   RAAN   argp   ecc   M
         %
         % Spacecraft properties
         %
         Cd = 2.2;                                   % Drag coefficient of the spacecraft
-        AMR = 0.02;                                 % S/m: Area to mass ratio of the spacecraft [m^2/kg]
+        AMR = 0.0153;0.02;                          % S/m: Area to mass ratio of the spacecraft [m^2/kg]
         delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
         %
         % Orbit properties
@@ -116,6 +116,8 @@ switch noradID
         %
         we = 7.2921159e-5;                          % Angular velocity of the earth [rad/s]
         wa = we;                                    % Angular velocity of the atmosphere in z-direction [rad/s]
+    case '19218'
+%         [1988,6,23,6,47,34.0918216109276,24655.7171757147,0.174811240538349,4.21788744534367,3.22086962168996,0.734115683001826,2.78425661127548]
         
 end
 

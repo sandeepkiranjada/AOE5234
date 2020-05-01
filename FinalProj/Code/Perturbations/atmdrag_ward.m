@@ -44,7 +44,7 @@ beta = 1/(H_p0);                        % Inverse of scale height [1/m]
 % % Compute for atmospheric density (perigee altitude must be < 1000 km)
 % %
 % [~,H_p] = atmosphere_og(hp);            % Input perigee altitude in km and compute new scale height
-% rho = rho_p0*exp((rp0-a)/(H_p));        %
+% rho = rho_p0*exp((r_p0-a)/(H_p));        %
 % beta = 1/(H_p);                         % Inverse of scale height [1/m]
 
 %
