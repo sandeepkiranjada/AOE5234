@@ -1,12 +1,12 @@
 clear
 clc
-close all
+% close all
 
 global PC eopdata
 drag_flag = 1;
 J2_flag = 1;
 Lunisolar_flag = 1;
-atmo_rotation_flag = 1;
+atmo_rotation_flag = 0;
 
 %% Load Global data 
 fid = fopen('eop19620101.txt','r');
@@ -15,28 +15,30 @@ fclose(fid);
 load DE430Coeff.mat
 PC = DE430Coeff;
 
-Mjd_UTC = Mjday(1960, 08, 12, 22, 52, 32.63);
+Mjd_UTC = Mjday(2010, 11, 28, 09, 08, 13.23);
 
 % Step   = 60;   % [s]
 % N_Step = 5256000; % 10 years
 % num = fix(N_Step*Step/86400)+50;
-% JD = Mjd_UTC+2400000.5;
-% i_PC = find(PC(:,1)<=JD & JD<=PC(:,2),1,'first');
-% PC = PC(i_PC:i_PC+num,:);
-% mjd = (floor(Mjd_UTC));
-% i_epo = find(mjd==eopdata(4,:),1,'first');
-% eopdata = eopdata(:,i_epo:i_epo+num);
+JD = Mjd_UTC+2400000.5;
+i_PC = find(PC(:,1)<=JD & JD<=PC(:,2),1,'first');
+PC = PC(i_PC:end,:);
+mjd = (floor(Mjd_UTC));
+i_epo = find(mjd==eopdata(4,:),1,'first');
+if isempty(i_epo)~=1
+eopdata = eopdata(:,i_epo:end);
+end
 
 %%
 muu=3.986004418e14;
 J2=0.0010826267;
 %%% Initial Conditions
-   h_p0     =  1540.577862052572*1e3;  %250*1e3;         %- perigee altitude               m
-   h_a0     =  1673.017653175208*1e3;  %35943*1e3;       %- apogiee altitute               m
-   incl0    =  0.825144415385987;      %deg2rad(6);      %- inclination                    0.0  to pi rad
-   omega0   =  4.443471546059100;      %deg2rad(60);     %- longitude of ascending node    0.0  to 2pi rad
-   argp0    =  0.162045275772745;      %deg2rad(178);    %- argument of perigee            0.0  to 2pi rad
-   nu0      =  0;                      %- true anomaly                   0.0  to 2pi rad
+   h_p0     =  237.6219454075454*1e3;  %1540.577862052572*1e3;  %250*1e3;         %- perigee altitude               m
+   h_a0     =  35730.19283802125*1e3;  %35943*1e3;       %- apogiee altitute               m
+   incl0    =  0.0305510046643136;     %deg2rad(6);      %- inclination                    0.0  to pi rad
+   omega0   =  3.15161424084136;       %deg2rad(60);     %- longitude of ascending node    0.0  to 2pi rad
+   argp0    =  2.94259253726977;       %deg2rad(178);    %- argument of perigee            0.0  to 2pi rad
+   nu0      =  -2.946745376973741;     %0;                      %- true anomaly                   0.0  to 2pi rad
 %%%   
    re       = 6378.137*1e3;           %  m
    r_p0     = (h_p0+re);              %- perigee distance              m
@@ -48,16 +50,16 @@ J2=0.0010826267;
    [r0,v0]  = coe2rv(p0/1e3,ecc0,incl0,omega0,argp0,nu0);
    r0  = r0*1e3; v0  = v0*1e3;        % m & m/s
 %%  Config Constants
-C_D=1.9;      %2.2;      % Drag Coefficient
-AMR=11.056;   %0.02;   % Area to mass ratio 
+C_D=2.2;  %1.9;      %2.2;      % Drag Coefficient
+AMR=0.0153; %11.056;   %0.02;   % Area to mass ratio 
 
 %%  Calculating Initial Condition for Density 
 
-% [rho_p,H_rho] = atmosphere_gurfil(h_p0);  % Input perigee altitude in km
-[rho_p,H_rho] = atmosphere_Rosengren(h_p0);
+[rho_p,H_rho] = atmosphere_gurfil(h_p0);  % Input perigee altitude in km
+% [rho_p,H_rho] = atmosphere_Rosengren(h_p0);
 %% Solving ODE
 
-no_yrs  = (1);
+no_yrs  = (2);
 tf      = no_yrs*(365*(24*(60*60)));
 tspan   = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
