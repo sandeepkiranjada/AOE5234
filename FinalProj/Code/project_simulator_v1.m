@@ -1,18 +1,18 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                     AME 559 Project
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                     AME 5234 Project
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clc
 clear
 close all
 flag_save = 0;
-addpath('./Gurfil_effects')
+addpath('./Perturbations')
 addpath('./../No-Averaged/Matlab codes')
 global PC eopdata
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               Numerical integration parameters
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 no_yrs = 10;
 tf = no_yrs*(365.25*(24*(60*60)));
@@ -23,6 +23,9 @@ AMRvec = [0.02  0.02  0.02  0.02  0.01  0.005];     % S/m: Area to mass ratio of
 ha0vec = [35943 20000 10000 35943 35943 35943]*1e3; % Initial apogee height [m]
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                         Read Ephemeris
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fid = fopen('eop19620101.txt','r');
 eopdata = fscanf(fid,'%i %d %d %i %f %f %f %f %f %f %f %f %i',[13 inf]);
@@ -30,46 +33,7 @@ fclose(fid);
 load DE430Coeff.mat
 PC = DE430Coeff;
 
-MJD_UTC = Mjday(2015, 01, 01, 00, 00, 00);
-
-[UT1_UTC,TAI_UTC] = IERS(eopdata,MJD_UTC,'l');
-[~,~, ~, TT_UTC, ~] = timediff(UT1_UTC,TAI_UTC);
-MJD_TT = MJD_UTC+TT_UTC/86400;
-MJD_TDB = Mjday_TDB(MJD_TT);
-
-[~,r_moon_vec_Epoch_ECI,r_sun_vec_Epoch_ECI] = JPL_Eph_DE430(MJD_TDB);
-
-% r_sun_vec_Epoch_ECI = [0.256079471355931e11;-1.329037849381719e11;-0.576159897120674e11];
-% r_moon_vec_Epoch_ECI = [2.441483261188510e8;2.785552838921067e8;0.996064997638575e8];
-
-
-inc = 23.44*pi/180;
-R1 = @(x) [1  0 0;...
-               0  cos(x) -sin(x);...
-               0  sin(x)  cos(x)];
-           
-r_sun_vec_Epoch_peri = R1(-inc)*r_sun_vec_Epoch_ECI;
-M_sun_epoch=atan2(r_sun_vec_Epoch_peri(2),r_sun_vec_Epoch_peri(1));
-
-
-r_moon_vec_Epoch_peri = R1(-inc+5.145*pi/180)*r_moon_vec_Epoch_ECI;
-M_moon_epoch=atan2(r_moon_vec_Epoch_peri(2),r_moon_vec_Epoch_peri(1));
-
-% r_sun_vec_Epoch_ECI = [0.256079471355931e11;-1.329037849381719e11;-0.576159897120674e11];
-% r_moon_vec_Epoch_ECI = [2.441483261188510e8;2.785552838921067e8;0.996064997638575e8];
-
-
-
-R1 = @(x) [1  0 0;...
-               0  cos(x) -sin(x);...
-               0  sin(x)  cos(x)];
-           
-r_sun_vec_Epoch_peri = R1(-inc)*r_sun_vec_Epoch_ECI;
-M_sun_epoch=atan2(r_sun_vec_Epoch_peri(2),r_sun_vec_Epoch_peri(1));
-
-
-r_moon_vec_Epoch_peri = R1(-inc+5.145*pi/180)*r_moon_vec_Epoch_ECI;
-M_moon_epoch=atan2(r_moon_vec_Epoch_peri(2),r_moon_vec_Epoch_peri(1));
+Mjd_UTC_Epoch = Mjday(2015, 01, 01, 00, 00, 00);
 
 for idx = 1%:length(AMRvec)
     
@@ -81,7 +45,7 @@ for idx = 1%:length(AMRvec)
     AMR = AMRvec(idx);                          % S/m: Area to mass ratio of the spacecraft [m^2/kg]
     delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
     we = 7.2921159e-5;                          % Angular velocity of the earth [rad/s]
-    wa = we;0.2*we;                             % Angular velocity of the atmosphere in z-direction [rad/s]
+    wa = we;                                    % Angular velocity of the atmosphere in z-direction [rad/s]
     xhat = [1;0;0];                             % Inertial X-direction
     yhat = [0;1;0];                             % Inertial Y-direction
     zhat = [0;0;1];                             % Inertial Z-direction
@@ -93,7 +57,7 @@ for idx = 1%:length(AMRvec)
     Re = 6378*1e3;                              % Radius of the Earth [m]
     
     hp0 = 250*1e3;                              % Initial perigee height [m]
-    ha0 = ha0vec(idx);                           % Initial apogee hegiht [m]
+    ha0 = ha0vec(idx);                          % Initial apogee hegiht [m]
     rp0 = Re+hp0;                               % Initial perigee radius [m]
     ra0 = Re+ha0;                               % Initial apogee radius [m]
     
@@ -111,7 +75,7 @@ for idx = 1%:length(AMRvec)
     r_p0 = (hp0)+Re;
 %     H_p0 = H_p0*1e3;
 %     rho_0r
-    rho_p0
+%     rho_p0
     %%% Define initial conditions
    
     Hvec0 = H0*[sin(raan0)*sin(i0) -cos(raan0)*sin(i0) cos(i0)]';
@@ -121,14 +85,17 @@ for idx = 1%:length(AMRvec)
     x0 = [Hvec0;evec0];
     
     avg_flag = 1; % 1 for singly averaged, 2 for doubly avegraged, and Guess What, 3 for triply averaged
+    drag_model = 1; % 1 for Gurfil and 2 for Ward
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                           Numerically integrate equations of motion
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%% Numerically integrate equations of motion
-%     [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0),tspan,x0,options); flag = 0;
-    [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,avg_flag,M_sun_epoch,M_moon_epoch),tspan,x0,options); flag = 1;
+    [t_integrator,xx] = ode113(@(t,x) project_function(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,H_p0,avg_flag,2,Mjd_UTC_Epoch),tspan,x0,options); flag = 0;
+%     [t_intW,xx_W] = ode113(@(t,x) project_function(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,H_p0,avg_flag,2,Mjd_UTC_Epoch),tspan,x0,options); flag = 0;
+%     [t_intG,xx_G] = ode113(@(t,x) project_function(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,H_p0,avg_flag,1,Mjd_UTC_Epoch),tspan,x0,options); flag = 1;
+ 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                       Convert results of integration to Keplerian elements
@@ -163,12 +130,12 @@ for idx = 1%:length(AMRvec)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     project_plotting_basic
-    idx
+
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                         Define Legend
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 q = get(0,'children');
 for f = 1:length(q)
@@ -185,9 +152,9 @@ for f = 1:length(q)
     end
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                        Save Images
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_save == 1
     for f = 1:length(q)
         figure(f);

@@ -1,10 +1,15 @@
-%% Oblateness
+global Re J2 a_sun V_mean_earth H_sun_vec H_sun_hat_vec
 
+Re = 6378*1e3;                              % Radius of the Earth [m]
+
+%
+% Oblateness
+%
 J2 = 1.08263e-3;
 
-
-
-%% Luni-Solar Constants
+%
+% Luni-Solar Constants For TAOD
+%
 inc = 23.44*pi/180;
 
 a_sun = 149597870700; % Mean value used, circular orbit assumption
@@ -24,26 +29,8 @@ mu_earth = 3.986004418e14;
 h_moon_vec = H_moon_vec./sqrt(a_moon*mu_earth);
 h_moon = norm(h_moon_vec);
 n_moon = sqrt(mu_earth/a_moon^3);
-
-
 mu_moon = mu_earth/81.30056907419062; %4.9048695e12;
-% mu_moon = 4.9048695e12;
-%% Luni-Solar orbital elements
 
-% M_sun_epoch = -((31+28+20)*24+22.75)*3600*n_sun;% Mean anamoly at epoch = 1st Jan 2015
-% M_moon_epoch = -((31+28+20)*24+22.75)*3600*n_moon;% Mean anamoly at epoch = 1st Jan 2015 (incidentally new moon, aligned with Sun)
-
-R1 = @(x) [1  0 0;...
-               0  cos(x) -sin(x);...
-               0  sin(x)  cos(x)];
-           
-R_peri2ECI = R1(inc);
-
-d_sun = a_sun; % Gurfil Notation for Eq 49-52
-r_sun = d_sun;
-
-d_moon = a_moon; % Gurfil Notation for Eq 49-52
-r_moon = d_moon;
 
 
 

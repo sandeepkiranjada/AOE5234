@@ -6,6 +6,7 @@ clc
 clear
 close all
 flag_save = 1;
+flag_plot = 1;
 
 addpath(genpath('TLEs'))
 
@@ -17,11 +18,11 @@ model = 'SGP4';
 
 % noradID = '00049';      % Echo 1A (LEO)
 % noradID = '02253';      % PAGEOS-A (Polar)
-% noradID = '02324';      % PasComSat/OV1-8 (LEO)
+noradID = '02324';      % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      % Ariane 1
 % noradID = '37239';      % Ariane 5 R/B
 % noradID = '16657';      % Ariane 3 R/B
-noradID = '19218';      % Ariane 44LP R/B
+% noradID = '19218';      % Ariane 44LP R/B
 filename = sprintf([ noradID '.txt']);
 fid = fopen(filename);
 res={};
@@ -35,7 +36,9 @@ kmax = no_of_lines/2;
 range = 1:kmax;
 fprintf('Total entries to be processed: %.0f\n',length(range));
 
+%
 % Retrieve UTC_time from TLE entries
+%
 [~,~,jd_cache,~,~] = LoadNORAD(filename,model,kmax);
 jd = jd_cache(range);
 clear jd_cache
@@ -48,17 +51,25 @@ for idx = 1:length(jd)
 end
 clear jd UTC_time_scratch
 UTC_datetime = datetime(UTC_time);
+UTC_datetime = UTC_datetime-UTC_datetime(1);
+time = datenum(UTC_datetime)/365.25;
 
+%
 % Convert TLE to [r,v] using SCT Toolbox
+%
 [r,v,jD,coe,x] = LoadNORAD(filename,model,kmax);
 rv_eci = [r' v']*1e3; % [r,v] (meters)
 
-
-%% Convert TLE to classical orbital elements using SCT Toolbox
+%
+% Convert TLE to classical orbital elements using SCT Toolbox
+%
 [el, name] = NORADToEl( [], [], [], model, filename );
 % el            (:,6)   Elements vector [a,i,W,w,e,M]
+% M2nu(el(5,5),el(5,6))
 
-%% Save data to .mat file
+%
+% Save data to .mat file
+%
 dataname = sprintf([ noradID '_data.mat']);
 realdata = [UTC_time el rv_eci];
 save(fullfile(pwd,'Data',dataname),'realdata');
@@ -70,25 +81,32 @@ save(fullfile(pwd,'Data',dataname),'realdata');
 % UTC_time = UTC_time(I,:);
 % el = el(I,:);
 
-%% Plotting
-f = figure();
-f.Units = 'centimeters';
-f.Position = [1 1 55 10];
-
-subplot(1,3,1);
-plot(UTC_datetime,el(:,1),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
-title('Semi-major Axis');
-ylabel('a [km]');
-
-subplot(1,3,2);
-plot(UTC_datetime,el(:,5),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
-title('Eccentricity');
-ylabel('e');
-
-subplot(1,3,3);
-plot(UTC_datetime,rad2deg(el(:,2)),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
-title('Inclination');
-ylabel('i [^\circ]');
+%
+% Plotting
+%
+if flag_plot
+    f = figure();
+    f.Units = 'centimeters';
+    f.Position = [1 1 55 10];
+    
+    subplot(1,3,1);
+    plot(time,el(:,1),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
+    title('Semi-major Axis');
+    ylabel('a [km]');
+    xlabel('In years mothafuckas');
+    
+    subplot(1,3,2);
+    plot(time,el(:,5),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
+    title('Eccentricity');
+    ylabel('e');
+    xlabel('In years mothafuckas');
+    
+    subplot(1,3,3);
+    plot(time,rad2deg(el(:,2)),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
+    title('Inclination');
+    ylabel('i [^\circ]');
+    xlabel('In years mothafuckas');
+end
 
 %% Save images
 if flag_save

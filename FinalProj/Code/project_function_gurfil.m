@@ -1,4 +1,4 @@
-function  [dxdt] = project_function_gurfil(t,x,mu,delta,~,~,Re,rho_p0,r_p0,avg_flag,Mjd_UTC)
+function  [dxdt] = project_function_gurfil(t,x,mu,delta,~,~,Re,rho_p0,r_p0,avg_flag,M_sun_epoch,M_moon_epoch)
 
 % % disp('----------------------------------------------------------');
 % 
@@ -31,7 +31,7 @@ function  [dxdt] = project_function_gurfil(t,x,mu,delta,~,~,Re,rho_p0,r_p0,avg_f
 % devec = -B*((1+e)/(a*sqrt(2*pi*z)))*rho*(1+K2)*H*evec./e;
 
 dxdt_drag = atmdrag(x,mu,delta,Re,rho_p0,r_p0);
-dxdt_lunisol = lunisolar(t,x,mu,delta,Re,rho_p0,r_p0,avg_flag,Mjd_UTC );
+dxdt_lunisol = lunisolar(t,x,mu,delta,Re,rho_p0,r_p0,avg_flag,M_sun_epoch,M_moon_epoch );
 dxdt_J2 = oblate( x,mu,delta,Re,rho_p0,r_p0 );
 
 %%% Save differential equations to output variable for function

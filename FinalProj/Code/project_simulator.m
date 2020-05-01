@@ -7,6 +7,8 @@ clear
 close all
 flag_save = 0;
 
+addpath(genpath('Formulation'))
+
 global Re J2 mu_earth mu_sun mu_moon
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,7 +40,7 @@ for idx = 1%:length(AMRvec)
     AMR = AMRvec(idx);                          % S/m: Area to mass ratio of the spacecraft [m^2/kg]
     delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
     we = 7.2921159e-5;                          % Angular velocity of the earth [rad/s]
-    wa = we;0;0.2*we;                           % Angular velocity of the atmosphere in z-direction [rad/s]
+    wa = we;0;                                  % Angular velocity of the atmosphere in z-direction [rad/s]
     xhat = [1;0;0];                             % Inertial X-direction
     yhat = [0;1;0];                             % Inertial Y-direction
     zhat = [0;0;1];                             % Inertial Z-direction
@@ -47,7 +49,7 @@ for idx = 1%:length(AMRvec)
     %                                       Initial conditions
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    Re = 6378*1e3;                              % Radius of the Earth [m]
+    Re = 6378160;                               % Radius of the Earth [m]
     
     hp0 = 250*1e3;                              % Initial perigee height [m]
     ha0 = ha0vec(idx);                          % Initial apogee hegiht [m]
@@ -78,8 +80,6 @@ for idx = 1%:length(AMRvec)
                 (cos(argp0)*sin(raan0)+cos(i0)*sin(argp0)*cos(raan0)) ...
                 (sin(argp0)*sin(i0))]';
     x0 = [Hvec0;evec0];
-    
-%     check = [rp0;a0;e0;rho_p0;H_p0];
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                           Numerically integrate equations of motion
@@ -162,3 +162,5 @@ if flag_save == 1
 else
 end
 % %}
+
+[YYYY,MM,DD,hh,mm,ss] = jdtogreg(2456594.14461928)
