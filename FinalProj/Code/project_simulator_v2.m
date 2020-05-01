@@ -91,8 +91,8 @@ switch noradID
         %
         % Spacecraft properties
         %
-        Cd = 2.2;                                   % Drag coefficient of the spacecraft
-        AMR = 0.02;                                 % S/m: Area to mass ratio of the spacecraft [m^2/kg]
+        Cd = 1.5;                                   % Drag coefficient of the spacecraft
+        AMR = 0.0153;                                 % S/m: Area to mass ratio of the spacecraft [m^2/kg]
         delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
         %
         % Orbit properties
