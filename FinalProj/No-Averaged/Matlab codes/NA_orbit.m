@@ -10,17 +10,19 @@ end
 k       = [0;0;1];
 w_earth = W_earth*k;
 del     = 0.5*AMR*C_D;
-r_k     = [x(1);x(2);x(3)];
-rdot_k  = [x(4);x(5);x(6)];
-r       = [x(7);x(8);x(9)];
-rdot    = [x(10);x(11);x(12)];
+% r_k     = [x(1);x(2);x(3)];
+% rdot_k  = [x(4);x(5);x(6)];
+% r       = [x(7);x(8);x(9)];
+% rdot    = [x(10);x(11);x(12)];
+r       = [x(1);x(2);x(3)];
+rdot    = [x(4);x(5);x(6)];
 
 
-rhat_k  = r_k/norm(r_k);
+% rhat_k  = r_k/norm(r_k);
 rhat    = r/norm(r);
-v_k     = norm(rdot_k);
+% v_k     = norm(rdot_k);
 v       = norm(rdot);
-H_k     = cross(r_k,rdot_k,1);
+% H_k     = cross(r_k,rdot_k,1);
 H       = cross(r,rdot,1);
 
 %% Perturbed accelerations
@@ -62,11 +64,12 @@ a_LuniSolar=aS+aM;
 end
 
 %% States
-dx1     = rdot_k;
-dx2     = -(muu/(norm(r_k)^3))*r_k;
-dx3     = rdot;
-dx4     = -(muu/(norm(r)^3))*r + drag_flag*a_drag + J2_flag*a_j2 + Lunisolar_flag*a_LuniSolar;
-dx      = [dx1;dx2;dx3;dx4];
+% dx1     = rdot_k;
+% dx2     = -(muu/(norm(r_k)^3))*r_k;
+dx1     = rdot;
+dx2     = -(muu/(norm(r)^3))*r + drag_flag*a_drag + J2_flag*a_j2 + Lunisolar_flag*a_LuniSolar;
+% dx      = [dx1;dx2;dx3;dx4];
+dx      = [dx1;dx2];
 end
 
 % w_earth=[0;0;0];

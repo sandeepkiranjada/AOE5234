@@ -1,12 +1,12 @@
 clear
 clc
-% close all
+close all
 
 global PC eopdata
 drag_flag = 1;
 J2_flag = 1;
 Lunisolar_flag = 1;
-atmo_rotation_flag = 0;
+atmo_rotation_flag = 1;
 
 %% Load Global data 
 fid = fopen('eop19620101.txt','r');
@@ -17,9 +17,7 @@ PC = DE430Coeff;
 
 Mjd_UTC = Mjday(2010, 11, 28, 09, 08, 13.23);
 
-% Step   = 60;   % [s]
-% N_Step = 5256000; % 10 years
-% num = fix(N_Step*Step/86400)+50;
+
 JD = Mjd_UTC+2400000.5;
 i_PC = find(PC(:,1)<=JD & JD<=PC(:,2),1,'first');
 PC = PC(i_PC:end,:);
@@ -55,35 +53,38 @@ AMR=0.0153; %11.056;   %0.02;   % Area to mass ratio
 
 %%  Calculating Initial Condition for Density 
 
-[rho_p,H_rho] = atmosphere_gurfil(h_p0);  % Input perigee altitude in km
-% [rho_p,H_rho] = atmosphere_Rosengren(h_p0);
+% [rho_p,H_rho] = atmosphere_gurfil(h_p0);  % Input perigee altitude in km
+[rho_p,H_rho] = atmosphere_Rosengren(h_p0);
 %% Solving ODE
 
-no_yrs  = (2);
+no_yrs  = (1);
 tf      = no_yrs*(365*(24*(60*60)));
 tspan   = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
-x0      = [r0;v0;r0;v0];
+x0      = [r0;v0];
 [t,x] = ode113(@(t,x) NA_orbit(t,x,AMR,C_D,r_p0,rho_p,re,H_rho,muu,J2,Mjd_UTC,drag_flag,J2_flag,Lunisolar_flag,atmo_rotation_flag),tspan,x0,options); 
-rmag_k = (sum(x(:,1:3).^2,2)).^(1/2);
-rmag   = (sum(x(:,7:9).^2,2)).^(1/2);
-vmag_k = (sum(x(:,4:6).^2,2)).^(1/2);
-vmag   = (sum(x(:,10:12).^2,2)).^(1/2);
+% rmag_k = (sum(x(:,1:3).^2,2)).^(1/2);
+rmag   = (sum(x(:,1:3).^2,2)).^(1/2);
+% vmag_k = (sum(x(:,4:6).^2,2)).^(1/2);
+vmag   = (sum(x(:,4:6).^2,2)).^(1/2);
 
 % rho = rho_p.*exp((r_p0-rmag)./(H_rho));
 %% Regenerating COE
-[ecc_pk,a_pk,incl_pk,omega_pk,argp_pk,nu_pk,p_pk,eps_pk] = rv2coe4vec(x(:,1:3),x(:,4:6),muu);
-[ecc_p,a_p,incl_p,omega_p,argp_p,nu_p,p_p,eps_p]         = rv2coe4vec(x(:,7:9),x(:,10:12),muu);
-r_pk=a_pk.*(1-ecc_pk);
+% [ecc_pk,a_pk,incl_pk,omega_pk,argp_pk,nu_pk,p_pk,eps_pk] = rv2coe4vec(x(:,1:3),x(:,4:6),muu);
+[ecc_p,a_p,incl_p,omega_p,argp_p,nu_p,p_p,eps_p]         = rv2coe4vec(x(:,1:3),x(:,4:6),muu);
+% r_pk=a_pk.*(1-ecc_pk);
 r_p=a_p.*(1-ecc_p);
+r_a=a_p.*(1+ecc_p);
 h_p=r_p-re;
-h_pk=r_pk-re;
+h_a=r_a-re;
+% h_pk=r_pk-re;
 
-incl_pk=rad2deg(incl_pk);     incl_p=rad2deg(incl_p);
-omega_pk=rad2deg(omega_pk);   omega_p=rad2deg(omega_p);
-argp_pk=rad2deg(argp_pk);     argp_p=rad2deg(argp_p);
-
-
+% incl_pk=rad2deg(incl_pk);     
+% omega_pk=rad2deg(omega_pk);   
+% argp_pk=rad2deg(argp_pk);     
+incl_p=rad2deg(incl_p);
+omega_p=rad2deg(omega_p);
+argp_p=rad2deg(argp_p);
 %% Saving .mat file
 
 % if drag_flag==1 && J2_flag==0 && Lunisolar_flag==0
@@ -104,36 +105,70 @@ argp_pk=rad2deg(argp_pk);     argp_p=rad2deg(argp_p);
 
 t_plot = (((t/60)/60)/24)/365;
 
-
 figure
-plot(t_plot,a_pk/1e3,'b',t_plot,a_p/1e3,'r','linewidth',1); grid on; hold on
+plot(t_plot,a_p/1e3,'r','linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('a (km)');
 xlim([0 no_yrs]);
 
 figure
-plot(t_plot,h_pk/1e3,'b',t_plot,h_p/1e3,'r','linewidth',1); grid on; hold on
+plot(t_plot,h_p/1e3,'r','linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('Perigee Height (km)');
 xlim([0 no_yrs]);
 
 figure
-plot(t_plot,incl_pk,'b',t_plot,incl_p,'r','linewidth',1); grid on; hold on
+plot(t_plot,incl_p,'r','linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('i (deg)');
 xlim([0 no_yrs]);
 
 figure
-plot(t_plot,omega_pk,'b',t_plot,omega_p,'r','linewidth',1); grid on; hold on
+plot(t_plot,omega_p,'r','linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('\Omega (deg)');
 xlim([0 no_yrs]);
 
 figure
-plot(t_plot,argp_pk,'b',t_plot,argp_p,'r','linewidth',1); grid on; hold on
+plot(t_plot,argp_p,'r','linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('\omega (deg)');
 xlim([0 no_yrs]);
 
 figure
-plot(t_plot,ecc_pk,'b',t_plot,ecc_p,'r','linewidth',1); grid on; hold on
+plot(t_plot,ecc_p,'r','linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('e ');
 xlim([0 no_yrs]);
+
+% figure
+% plot(t_plot,a_pk/1e3,'b',t_plot,a_p/1e3,'r','linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('a (km)');
+% xlim([0 no_yrs]);
+% 
+% figure
+% plot(t_plot,h_pk/1e3,'b',t_plot,h_p/1e3,'r','linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('Perigee Height (km)');
+% xlim([0 no_yrs]);
+% 
+% figure
+% plot(t_plot,incl_pk,'b',t_plot,incl_p,'r','linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('i (deg)');
+% xlim([0 no_yrs]);
+% 
+% figure
+% plot(t_plot,omega_pk,'b',t_plot,omega_p,'r','linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('\Omega (deg)');
+% xlim([0 no_yrs]);
+% 
+% figure
+% plot(t_plot,argp_pk,'b',t_plot,argp_p,'r','linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('\omega (deg)');
+% xlim([0 no_yrs]);
+% 
+% figure
+% plot(t_plot,ecc_pk,'b',t_plot,ecc_p,'r','linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('e ');
+% xlim([0 no_yrs]);
+
+% figure
+% plot(t_plot,h_a/1e3,'r','linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('apogee Height (km)');
+% xlim([0 no_yrs]);
 
 % figure
 % plot(t_plot,rmag_k,'b','linewidth',1); grid on; hold on
