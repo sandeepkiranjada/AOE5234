@@ -7,6 +7,8 @@ clear
 close all
 flag_save = 0;
 addpath('./Gurfil_effects')
+addpath('C:/Users/sande/Documents/GitHub/AOE5234/FinalProj/No-Averaged/Matlab codes')
+global PC eopdata
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               Numerical integration parameters
@@ -19,6 +21,16 @@ options = odeset('RelTol',1e-12,'AbsTol',1e-12);
 
 AMRvec = [0.02  0.02  0.02  0.02  0.01  0.005];     % S/m: Area to mass ratio of the spacecraft [m^2/kg]
 ha0vec = [35943 20000 10000 35943 35943 35943]*1e3; % Initial apogee height [m]
+
+
+
+fid = fopen('C:\Users\sande\Documents\GitHub\AOE5234\FinalProj\No-Averaged\Matlab codes\eop19620101.txt','r');
+eopdata = fscanf(fid,'%i %d %d %i %f %f %f %f %f %f %f %f %i',[13 inf]);
+fclose(fid);
+load DE430Coeff.mat
+PC = DE430Coeff;
+
+Mjd_UTC = Mjday(2015, 01, 01, 00, 00, 00);
 
 for idx = 1:length(AMRvec)
     
@@ -62,23 +74,14 @@ for idx = 1:length(AMRvec)
 %     rho_0r
     rho_p0
     %%% Define initial conditions
-    Hvec0_peri = [0 0 H0]';
-    evec0_peri = [e0 0 0]';
-    
-    R3 = @(x) [cos(x) -sin(x) 0; sin(x) cos(x) 0; 0 0 1]';
-    R1 = @(x) [1 0 0;0 cos(x) -sin(x);0 sin(x) cos(x)]';
-
-    R_pi = R3(-raan0)*R1(-i0)*R3(-argp0);
-    Hvec0 = R_pi * Hvec0_peri;
-    evec0 = R_pi * evec0_peri;
-    
-%     Hvec0 = H0*[sin(raan0)*sin(i0) -cos(raan0)*sin(i0) cos(i0)]';
-%     evec0 = e0*[(cos(argp0)*cos(raan0)-cos(i0)*sin(argp0)*sin(raan0)) ...
-%         (cos(argp0)*sin(raan0)+cos(i0)*sin(argp0)*cos(raan0)) ...
-%         (sin(argp0)*sin(i0))]';
+   
+    Hvec0 = H0*[sin(raan0)*sin(i0) -cos(raan0)*sin(i0) cos(i0)]';
+    evec0 = e0*[(cos(argp0)*cos(raan0)-cos(i0)*sin(argp0)*sin(raan0)) ...
+        (cos(argp0)*sin(raan0)+cos(i0)*sin(argp0)*cos(raan0)) ...
+        (sin(argp0)*sin(i0))]';
     x0 = [Hvec0;evec0];
     
-    avg_flag = 3; % 1 for singly averaged, 2 for doubly avegraged, and Guess What, 3 for triply averaged
+    avg_flag = 1; % 1 for singly averaged, 2 for doubly avegraged, and Guess What, 3 for triply averaged
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                           Numerically integrate equations of motion
@@ -86,7 +89,7 @@ for idx = 1:length(AMRvec)
     
     %%% Numerically integrate equations of motion
 %     [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0),tspan,x0,options); flag = 0;
-    [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,avg_flag),tspan,x0,options); flag = 1;
+    [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,avg_flag,Mjd_UTC),tspan,x0,options); flag = 1;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                       Convert results of integration to Keplerian elements
