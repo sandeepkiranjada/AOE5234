@@ -1,10 +1,15 @@
-%% Oblateness
+global Re J2 a_sun V_mean_earth H_sun_vec H_sun_hat_vec
 
+Re = 6378*1e3;                              % Radius of the Earth [m]
+
+%
+% Oblateness
+%
 J2 = 1.08263e-3;
 
-
-
-%% Luni-Solar Constants For TAOD
+%
+% Luni-Solar Constants For TAOD
+%
 inc = 23.44*pi/180;
 
 a_sun = 149597870700; % Mean value used, circular orbit assumption
@@ -24,8 +29,6 @@ mu_earth = 3.986004418e14;
 h_moon_vec = H_moon_vec./sqrt(a_moon*mu_earth);
 h_moon = norm(h_moon_vec);
 n_moon = sqrt(mu_earth/a_moon^3);
-
-
 mu_moon = mu_earth/81.30056907419062; %4.9048695e12;
 
 
