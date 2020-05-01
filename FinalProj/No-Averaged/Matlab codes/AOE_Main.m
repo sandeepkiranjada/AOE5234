@@ -4,8 +4,9 @@ close all
 
 global PC eopdata
 drag_flag = 1;
-J2_flag = 0;
-Lunisolar_flag = 0;
+J2_flag = 1;
+Lunisolar_flag = 1;
+atmo_rotation_flag = 1;
 
 %% Load Global data 
 fid = fopen('eop19620101.txt','r');
@@ -14,7 +15,7 @@ fclose(fid);
 load DE430Coeff.mat
 PC = DE430Coeff;
 
-Mjd_UTC = Mjday(2015, 01, 01, 00, 00, 00);
+Mjd_UTC = Mjday(1960, 08, 12, 22, 52, 32.63);
 
 % Step   = 60;   % [s]
 % N_Step = 5256000; % 10 years
@@ -30,12 +31,12 @@ Mjd_UTC = Mjday(2015, 01, 01, 00, 00, 00);
 muu=3.986004418e14;
 J2=0.0010826267;
 %%% Initial Conditions
-   h_p0     =  250*1e3;         %- perigee altitude               m
-   h_a0     =  35943*1e3;       %- apogiee altitute               m
-   incl0    =  deg2rad(6);      %- inclination                    0.0  to pi rad
-   omega0   =  deg2rad(60);     %- longitude of ascending node    0.0  to 2pi rad
-   argp0    =  deg2rad(178);    %- argument of perigee            0.0  to 2pi rad
-   nu0      =  0;               %- true anomaly                   0.0  to 2pi rad
+   h_p0     =  1540.577862052572*1e3;  %250*1e3;         %- perigee altitude               m
+   h_a0     =  1673.017653175208*1e3;  %35943*1e3;       %- apogiee altitute               m
+   incl0    =  0.825144415385987;      %deg2rad(6);      %- inclination                    0.0  to pi rad
+   omega0   =  4.443471546059100;      %deg2rad(60);     %- longitude of ascending node    0.0  to 2pi rad
+   argp0    =  0.162045275772745;      %deg2rad(178);    %- argument of perigee            0.0  to 2pi rad
+   nu0      =  0;                      %- true anomaly                   0.0  to 2pi rad
 %%%   
    re       = 6378.137*1e3;           %  m
    r_p0     = (h_p0+re);              %- perigee distance              m
@@ -47,27 +48,27 @@ J2=0.0010826267;
    [r0,v0]  = coe2rv(p0/1e3,ecc0,incl0,omega0,argp0,nu0);
    r0  = r0*1e3; v0  = v0*1e3;        % m & m/s
 %%  Config Constants
-C_D=2.2;   % Drag Coefficient
-AMR=0.02;  % Area to mass ratio 
+C_D=1.9;      %2.2;      % Drag Coefficient
+AMR=11.056;   %0.02;   % Area to mass ratio 
 
 %%  Calculating Initial Condition for Density 
 
-[rho_p,H_rho] = atmosphere_gurfil(h_p0);  % Input perigee altitude in km
-
+% [rho_p,H_rho] = atmosphere_gurfil(h_p0);  % Input perigee altitude in km
+[rho_p,H_rho] = atmosphere_Rosengren(h_p0);
 %% Solving ODE
 
-no_yrs  = 1/12;
+no_yrs  = (1);
 tf      = no_yrs*(365*(24*(60*60)));
 tspan   = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
 x0      = [r0;v0;r0;v0];
-[t,x] = ode113(@(t,x) NA_orbit(t,x,AMR,C_D,r_p0,rho_p,re,H_rho,muu,J2,Mjd_UTC,drag_flag,J2_flag,Lunisolar_flag),tspan,x0,options); 
+[t,x] = ode113(@(t,x) NA_orbit(t,x,AMR,C_D,r_p0,rho_p,re,H_rho,muu,J2,Mjd_UTC,drag_flag,J2_flag,Lunisolar_flag,atmo_rotation_flag),tspan,x0,options); 
 rmag_k = (sum(x(:,1:3).^2,2)).^(1/2);
 rmag   = (sum(x(:,7:9).^2,2)).^(1/2);
 vmag_k = (sum(x(:,4:6).^2,2)).^(1/2);
 vmag   = (sum(x(:,10:12).^2,2)).^(1/2);
 
-rho = rho_p.*exp((r_p0-rmag)./(H_rho));
+% rho = rho_p.*exp((r_p0-rmag)./(H_rho));
 %% Regenerating COE
 [ecc_pk,a_pk,incl_pk,omega_pk,argp_pk,nu_pk,p_pk,eps_pk] = rv2coe4vec(x(:,1:3),x(:,4:6),muu);
 [ecc_p,a_p,incl_p,omega_p,argp_p,nu_p,p_p,eps_p]         = rv2coe4vec(x(:,7:9),x(:,10:12),muu);
@@ -79,6 +80,23 @@ h_pk=r_pk-re;
 incl_pk=rad2deg(incl_pk);     incl_p=rad2deg(incl_p);
 omega_pk=rad2deg(omega_pk);   omega_p=rad2deg(omega_p);
 argp_pk=rad2deg(argp_pk);     argp_p=rad2deg(argp_p);
+
+
+%% Saving .mat file
+
+% if drag_flag==1 && J2_flag==0 && Lunisolar_flag==0
+%     if atmo_rotation_flag
+%         save('Only_drag_AtmosR','ecc_p','a_p','incl_p','omega_p','argp_p','nu_p','r_p','h_p')
+%     else
+%         save('Only_drag_noAtmosR','ecc_p','a_p','incl_p','omega_p','argp_p','nu_p','r_p','h_p')
+%     end
+% elseif drag_flag==1 && J2_flag==1 && Lunisolar_flag==1
+%     if atmo_rotation_flag
+%         save('All_per_AtmosR','ecc_p','a_p','incl_p','omega_p','argp_p','nu_p','r_p','h_p')
+%     else
+%         save('All_per_noAtmosR','ecc_p','a_p','incl_p','omega_p','argp_p','nu_p','r_p','h_p')
+%     end
+% end
 
 %% Plot
 
