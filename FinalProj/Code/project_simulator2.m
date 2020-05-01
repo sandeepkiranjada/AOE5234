@@ -25,6 +25,8 @@ ha0vec = [35943 20000 10000 35943 35943 35943]*1e3; % Initial apogee height [m]
 % ha0vec = [25000 20000 10000 35943 35943 35943]*1e3; % Initial apogee height [m]
 format longg
 
+addpath('./Gurfil_effects');
+
 for idx = 1%:length(AMRvec)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -35,7 +37,7 @@ for idx = 1%:length(AMRvec)
     AMR = AMRvec(idx);                          % S/m: Area to mass ratio of the spacecraft [m^2/kg]
     delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
     we = 7.2921159e-5;                          % Angular velocity of the earth [rad/s]
-    wa = we;0;0.2*we;                           % Angular velocity of the atmosphere in z-direction [rad/s]
+    wa = 0;we;0.2*we;                           % Angular velocity of the atmosphere in z-direction [rad/s]
     xhat = [1;0;0];                             % Inertial X-direction
     yhat = [0;1;0];                             % Inertial Y-direction
     zhat = [0;0;1];                             % Inertial Z-direction
@@ -81,8 +83,9 @@ for idx = 1%:length(AMRvec)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%% Numerically integrate equations of motion
-    [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,delta,wa,zhat,rho_p0,rp0,H_p0),tspan,x0,options); flag = 0;
-    % [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rp0,rho_p0,H_p0),tspan,x0,options); flag = 1;
+    % [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,delta,wa,zhat,rho_p0,rp0,H_p0),tspan,x0,options); flag = 0;
+    [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,rp0),tspan,x0,options); flag = 1;
+%     [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,rp0,H_p0),tspan,x0,options); flag = 1;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                       Convert results of integration to Keplerian elements
