@@ -38,37 +38,37 @@ plot(t_plot,inc,str,'linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('i (deg)');
 xlim([0 no_yrs]);
 
-f = figure(count + 4);
-f.Units = 'centimeters';
-% f.Position = picscale*[21 26 12 12];
-plot(t_plot,argp,str,'linewidth',1); grid on; hold on
-xlabel('Elapsed time (yrs)'); ylabel('\omega (deg)');
-xlim([0 no_yrs]);
-
-f = figure(count + 5);
-f.Units = 'centimeters';
-% f.Position = picscale*[21 13.5 12 12];
-plot(t_plot,raan,str,'linewidth',1); grid on; hold on
-xlabel('Elapsed time (yrs)'); ylabel('\Omega (deg)');
-xlim([0 no_yrs]);
-
-f = figure(count + 6);
-f.Units = 'centimeters';
-% f.Position = picscale*[21 1 18 12];
-plot(t_plot,hp*1e-3,str,'linewidth',1); grid on; hold on
-xlabel('Elapsed time (yrs)'); ylabel('h_p (km)');
-xlim([0 no_yrs]);
-
-f = figure(count + 7);
-f.Units = 'centimeters';
-% f.Position = picscale*[42 26 18 12];
-plot(t_plot,ha*1e-3,str,'linewidth',1); grid on; hold on
-xlabel('Elapsed time (yrs)'); ylabel('h_a (km)');
-xlim([0 no_yrs]);
-
-f = figure(count + 8);
-f.Units = 'centimeters';
-% f.Position = picscale*[42 13.5 18 12];
-plot(t_plot,H*1e-6,str,'linewidth',1); grid on; hold on
-xlabel('Elapsed time (yrs)'); ylabel('H (km^2/s)');
-xlim([0 no_yrs]);
+% f = figure(count + 4);
+% f.Units = 'centimeters';
+% % f.Position = picscale*[21 26 12 12];
+% plot(t_plot,argp,str,'linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('\omega (deg)');
+% xlim([0 no_yrs]);
+% 
+% f = figure(count + 5);
+% f.Units = 'centimeters';
+% % f.Position = picscale*[21 13.5 12 12];
+% plot(t_plot,raan,str,'linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('\Omega (deg)');
+% xlim([0 no_yrs]);
+% 
+% f = figure(count + 6);
+% f.Units = 'centimeters';
+% % f.Position = picscale*[21 1 18 12];
+% plot(t_plot,hp*1e-3,str,'linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('h_p (km)');
+% xlim([0 no_yrs]);
+% 
+% f = figure(count + 7);
+% f.Units = 'centimeters';
+% % f.Position = picscale*[42 26 18 12];
+% plot(t_plot,ha*1e-3,str,'linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('h_a (km)');
+% xlim([0 no_yrs]);
+% 
+% f = figure(count + 8);
+% f.Units = 'centimeters';
+% % f.Position = picscale*[42 13.5 18 12];
+% plot(t_plot,H*1e-6,str,'linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('H (km^2/s)');
+% xlim([0 no_yrs]);
