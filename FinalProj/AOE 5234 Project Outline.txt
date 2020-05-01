@@ -1,0 +1,19 @@
+﻿OUTLINE ver 2
+
+
+OUTLINE ver 1
+
+1. Abstract																Dani
+2. Introduction															Dani
+3. Non-Averaged Dynamics												Ali
+        Drag + J2  + sun + moon
+4. Averaged Dynamics
+   4.1. Milankovitch elements											Sandeep
+   4.2. Averaged Equations for drag										Sandeep
+      * Comparison of Ward and Gurfil  + J2  + sun + moon			
+   4.3. Comparison (just drag)											Ali
+      * Plot (1) w = 0 vs w~= 0 for NA, Ave Ward, Ave Gurfil (a,e,i)
+	  * Plot (2) LEO vs GTO vs HEO (vs Polar)
+5. Model verification/Simulation Results (drag + J2 + sun + moon)
+   5.1. Mission-Relevant Scenario: LEO vs GTO vs HEO (vs Polar) 		TBD
+6. Conclusions
