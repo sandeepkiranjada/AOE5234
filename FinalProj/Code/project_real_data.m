@@ -6,6 +6,7 @@ clc
 clear
 close all
 flag_save = 1;
+flag_plot = 1;
 
 addpath(genpath('TLEs'))
 
@@ -19,7 +20,7 @@ model = 'SGP4';
 % noradID = '02253';      % PAGEOS-A (Polar)
 % noradID = '02324';      % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      % Ariane 1
-% noradID = '37239';      % Ariane 5 R/B
+noradID = '37239';      % Ariane 5 R/B
 % noradID = '16657';      % Ariane 3 R/B
 % noradID = '19218';      % Ariane 44LP R/B
 filename = sprintf([ noradID '.txt']);
@@ -50,6 +51,7 @@ for idx = 1:length(jd)
 end
 clear jd UTC_time_scratch
 UTC_datetime = datetime(UTC_time);
+UTC_date
 
 %
 % Convert TLE to [r,v] using SCT Toolbox
@@ -57,12 +59,12 @@ UTC_datetime = datetime(UTC_time);
 [r,v,jD,coe,x] = LoadNORAD(filename,model,kmax);
 rv_eci = [r' v']*1e3; % [r,v] (meters)
 
-
 %
 % Convert TLE to classical orbital elements using SCT Toolbox
 %
 [el, name] = NORADToEl( [], [], [], model, filename );
 % el            (:,6)   Elements vector [a,i,W,w,e,M]
+% M2nu(el(5,5),el(5,6))
 
 %
 % Save data to .mat file
