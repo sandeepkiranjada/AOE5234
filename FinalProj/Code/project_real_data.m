@@ -35,7 +35,9 @@ kmax = no_of_lines/2;
 range = 1:kmax;
 fprintf('Total entries to be processed: %.0f\n',length(range));
 
+%
 % Retrieve UTC_time from TLE entries
+%
 [~,~,jd_cache,~,~] = LoadNORAD(filename,model,kmax);
 jd = jd_cache(range);
 clear jd_cache
@@ -49,16 +51,22 @@ end
 clear jd UTC_time_scratch
 UTC_datetime = datetime(UTC_time);
 
+%
 % Convert TLE to [r,v] using SCT Toolbox
+%
 [r,v,jD,coe,x] = LoadNORAD(filename,model,kmax);
 rv_eci = [r' v']*1e3; % [r,v] (meters)
 
 
-%% Convert TLE to classical orbital elements using SCT Toolbox
+%
+% Convert TLE to classical orbital elements using SCT Toolbox
+%
 [el, name] = NORADToEl( [], [], [], model, filename );
 % el            (:,6)   Elements vector [a,i,W,w,e,M]
 
-%% Save data to .mat file
+%
+% Save data to .mat file
+%
 dataname = sprintf([ noradID '_data.mat']);
 realdata = [UTC_time el rv_eci];
 save(fullfile(pwd,'Data',dataname),'realdata');
@@ -70,25 +78,29 @@ save(fullfile(pwd,'Data',dataname),'realdata');
 % UTC_time = UTC_time(I,:);
 % el = el(I,:);
 
-%% Plotting
-f = figure();
-f.Units = 'centimeters';
-f.Position = [1 1 55 10];
-
-subplot(1,3,1);
-plot(UTC_datetime,el(:,1),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
-title('Semi-major Axis');
-ylabel('a [km]');
-
-subplot(1,3,2);
-plot(UTC_datetime,el(:,5),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
-title('Eccentricity');
-ylabel('e');
-
-subplot(1,3,3);
-plot(UTC_datetime,rad2deg(el(:,2)),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
-title('Inclination');
-ylabel('i [^\circ]');
+%
+% Plotting
+%
+if flag_plot
+    f = figure();
+    f.Units = 'centimeters';
+    f.Position = [1 1 55 10];
+    
+    subplot(1,3,1);
+    plot(UTC_datetime,el(:,1),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
+    title('Semi-major Axis');
+    ylabel('a [km]');
+    
+    subplot(1,3,2);
+    plot(UTC_datetime,el(:,5),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
+    title('Eccentricity');
+    ylabel('e');
+    
+    subplot(1,3,3);
+    plot(UTC_datetime,rad2deg(el(:,2)),':ok','MarkerSize',2,'MarkerFaceColor','k'); grid on; set(gca,'FontSize',12);
+    title('Inclination');
+    ylabel('i [^\circ]');
+end
 
 %% Save images
 if flag_save
