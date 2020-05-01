@@ -35,8 +35,6 @@ if z > 1000
 elseif z < 0
     z = 0;
 end
- 
-z
 
 %...Determine the interpolation interval:
 for j = 1:27

@@ -16,8 +16,12 @@ model = 'SGP4';
 %     model = 'SDP4';
 
 % noradID = '00049';      % Echo 1A (LEO)
-noradID = '02253';      % PAGEOS-A (Polar)
+% noradID = '02253';      % PAGEOS-A (Polar)
 % noradID = '02324';      % PasComSat/OV1-8 (LEO)
+% noradID = '11659';      % Ariane 1
+% noradID = '37239';      % Ariane 5 R/B
+% noradID = '16657';      % Ariane 3 R/B
+noradID = '19218';      % Ariane 44LP R/B
 filename = sprintf([ noradID '.txt']);
 fid = fopen(filename);
 res={};
@@ -94,6 +98,7 @@ if flag_save
         set(gca,'FontSize',12);
         figname = sprintf([ 'Real Data ' noradID ' Figure ' num2str(length(q)+1-f)]);
         print(q(f),fullfile(pwd,'Figures',figname),'-dpng','-r300');
+        savefig(q(f),fullfile(pwd,'Figures',figname));
     end
 end
 
