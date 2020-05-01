@@ -7,7 +7,7 @@ clear
 close all
 flag_save = 0;
 addpath('./Gurfil_effects')
-addpath('C:/Users/sande/Documents/GitHub/AOE5234/FinalProj/No-Averaged/Matlab codes')
+addpath('./../No-Averaged/Matlab codes')
 global PC eopdata
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -24,15 +24,54 @@ ha0vec = [35943 20000 10000 35943 35943 35943]*1e3; % Initial apogee height [m]
 
 
 
-fid = fopen('C:\Users\sande\Documents\GitHub\AOE5234\FinalProj\No-Averaged\Matlab codes\eop19620101.txt','r');
+fid = fopen('eop19620101.txt','r');
 eopdata = fscanf(fid,'%i %d %d %i %f %f %f %f %f %f %f %f %i',[13 inf]);
 fclose(fid);
 load DE430Coeff.mat
 PC = DE430Coeff;
 
-Mjd_UTC = Mjday(2015, 01, 01, 00, 00, 00);
+MJD_UTC = Mjday(2015, 01, 01, 00, 00, 00);
 
-for idx = 1:length(AMRvec)
+[UT1_UTC,TAI_UTC] = IERS(eopdata,MJD_UTC,'l');
+[~,~, ~, TT_UTC, ~] = timediff(UT1_UTC,TAI_UTC);
+MJD_TT = MJD_UTC+TT_UTC/86400;
+MJD_TDB = Mjday_TDB(MJD_TT);
+
+[~,r_moon_vec_Epoch_ECI,r_sun_vec_Epoch_ECI] = JPL_Eph_DE430(MJD_TDB);
+
+% r_sun_vec_Epoch_ECI = [0.256079471355931e11;-1.329037849381719e11;-0.576159897120674e11];
+% r_moon_vec_Epoch_ECI = [2.441483261188510e8;2.785552838921067e8;0.996064997638575e8];
+
+
+inc = 23.44*pi/180;
+R1 = @(x) [1  0 0;...
+               0  cos(x) -sin(x);...
+               0  sin(x)  cos(x)];
+           
+r_sun_vec_Epoch_peri = R1(-inc)*r_sun_vec_Epoch_ECI;
+M_sun_epoch=atan2(r_sun_vec_Epoch_peri(2),r_sun_vec_Epoch_peri(1));
+
+
+r_moon_vec_Epoch_peri = R1(-inc+5.145*pi/180)*r_moon_vec_Epoch_ECI;
+M_moon_epoch=atan2(r_moon_vec_Epoch_peri(2),r_moon_vec_Epoch_peri(1));
+
+% r_sun_vec_Epoch_ECI = [0.256079471355931e11;-1.329037849381719e11;-0.576159897120674e11];
+% r_moon_vec_Epoch_ECI = [2.441483261188510e8;2.785552838921067e8;0.996064997638575e8];
+
+
+
+R1 = @(x) [1  0 0;...
+               0  cos(x) -sin(x);...
+               0  sin(x)  cos(x)];
+           
+r_sun_vec_Epoch_peri = R1(-inc)*r_sun_vec_Epoch_ECI;
+M_sun_epoch=atan2(r_sun_vec_Epoch_peri(2),r_sun_vec_Epoch_peri(1));
+
+
+r_moon_vec_Epoch_peri = R1(-inc+5.145*pi/180)*r_moon_vec_Epoch_ECI;
+M_moon_epoch=atan2(r_moon_vec_Epoch_peri(2),r_moon_vec_Epoch_peri(1));
+
+for idx = 1%:length(AMRvec)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                                        System parameters
@@ -89,7 +128,7 @@ for idx = 1:length(AMRvec)
     
     %%% Numerically integrate equations of motion
 %     [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0),tspan,x0,options); flag = 0;
-    [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,avg_flag,Mjd_UTC),tspan,x0,options); flag = 1;
+    [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu,delta,wa,zhat,Re,rho_p0,r_p0,avg_flag,M_sun_epoch,M_moon_epoch),tspan,x0,options); flag = 1;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %                       Convert results of integration to Keplerian elements
