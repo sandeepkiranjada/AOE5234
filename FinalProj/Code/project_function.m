@@ -1,4 +1,4 @@
-function  [dxdt] = project_function(t,x,delta,wa,rho_p0,r_p0,H_p0,avg_flag,drag_model,Mjd_UTC_Epoch)
+function  [dxdt] = project_function(t,x,delta,wa,rho_p0,r_p0,H_p0,avg_flag,drag_model,Mjd_UTC_Epoch,pert_fac)
 %
 % Atmospheric Drag Perturbation
 %
@@ -23,6 +23,6 @@ dxdt_J2 = oblate(x);
 %
 % Save differential equations to output variable for function
 %
-dxdt = dxdt_drag + dxdt_lunisol + dxdt_J2;
+dxdt = pert_fac(1)*dxdt_drag + pert_fac(2)*dxdt_lunisol + pert_fac(3)*dxdt_J2;
 
 end
