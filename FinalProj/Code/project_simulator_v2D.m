@@ -6,7 +6,8 @@ clc
 clear
 % close all
 flag_save = 0;
-addpath('./Perturbations')
+% addpath('./Perturbations')
+addpath('./Perturbations v1')
 addpath('./../No-Averaged/Matlab codes')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,8 +97,8 @@ end
 %
 % Compute for atmospheric density (perigee altitude must be < 1000 km)
 %
-% [rho_p0,H_p0] = atmosphere_og(hp0);         % (A) Input perigee altitude
-[rho_p0,H_p0] = atmosphere_gurfil(hp0);     % (B) Input perigee altitude in m
+[rho_p0,H_p0] = atmosphere_og(hp0);         % (A) Input perigee altitude
+% [rho_p0,H_p0] = atmosphere_gurfil(hp0);     % (B) Input perigee altitude in m
 
 %
 % Define initial conditions for integrator based on spacecraft initial conditions
