@@ -1,6 +1,6 @@
 load 37239_data
 
-line_no = 10;
+line_no = 2;
 %
 % Start date and time of simulation
 %
@@ -18,7 +18,7 @@ delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
 %
 % Orbit properties
 %
-a0 = realdata(line_no,7);
+a0 = realdata(line_no,7)*1e3;
 i0 = realdata(line_no,8);
 raan0 = realdata(line_no,9);
 argp0 = realdata(line_no,10);
