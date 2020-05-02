@@ -1,23 +1,29 @@
+load 37239_data
+
+line_no = 2;
 %
 % Start date and time of simulation
 %
-Mjd_UTC_Epoch = Mjday(2010,11,28,9,8,13.2351440191269);
+Mjd_UTC_Epoch = Mjday(realdata(line_no,1),realdata(line_no,2),...
+                realdata(line_no,3),realdata(line_no,4),...
+                realdata(line_no,5),realdata(line_no,6));
 % [a,i,W,w,e,M] a  inc   RAAN   argp   ecc   M
 %
 % Spacecraft properties
 %
 Cd = 2.2;                                   % Drag coefficient of the spacecraft
 AMR = 0.0153;0.02;                          % S/m: Area to mass ratio of the spacecraft [m^2/kg]
+                                            % http://www.spacelaunchreport.com/ariane5.html
 delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
 %
 % Orbit properties
 %
-a0 = 24361.7482201275*1e3;
-i0 = 0.0302181724765577;
-raan0 = 3.10964407613065;
-argp0 = 3.02952610730407;
-e0 = 0.728072678688366;
-M0 = -2.64967023526191;
+a0 = realdata(line_no,7)*1e3;
+i0 = realdata(line_no,8);
+raan0 = realdata(line_no,9);
+argp0 = realdata(line_no,10);
+e0 = realdata(line_no,11);
+M0 = realdata(line_no,12);
 nu0 = truanamoly(M0,e0);
 %
 % Orbit properties

@@ -37,6 +37,10 @@ inc = acos(dot(zhat,Hhat));     % Inclination [rad]
 % Compute for atmospheric density (perigee altitude must be < 1000 km)
 %
 rho = rho_p0*exp((r_p0-a)/(H_p0));
+% [~,rho_p_all] = atmosnrlmsise00(hp,0,0,2010,1,0,'None');     % (B) Input perigee altitude in m
+% rho_p = rho_p_all(6);
+% rho = rho_p *  exp((-a*e)/(H_p0));
+% rho = rho_p0*exp((r_p0-a)/(H_p0)) ;% *  exp((-a*e)/(H_p0));
 beta = 1/(H_p0);                        % Inverse of scale height [1/m]
 
 % %
