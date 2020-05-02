@@ -9,6 +9,16 @@ flag_save = 0;
 
 addpath(genpath('Formulation'))
 
+%  Add specified folder to the top of the search path
+addpath(genpath('Toolkits/mice/lib'));
+addpath(genpath('Toolkits/mice/src/mice'));
+
+%  Load SPICE kernel files into MATLAB
+cspice_furnsh(fullfile(pwd,'Toolkits/spicedata/de430.bsp'));               % Planetary ephemerides 
+cspice_furnsh(fullfile(pwd,'Toolkits/spicedata/pck00010.tpc'));            % Planet orientation and radii
+cspice_furnsh(fullfile(pwd,'Toolkits/spicedata/gm_de431.tpc'));            % GM/mass 
+cspice_furnsh(fullfile(pwd,'Toolkits/spicedata/naif0011.tls'));            % leapseconds 
+
 global Re J2 mu_earth mu_sun mu_moon
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -65,11 +75,12 @@ for idx = 1%:length(AMRvec)
     
     H0 = sqrt(a0*mu_earth*(1-e0^2));                  % Initial angular momentum
     
-    jd0 = juliandate(datetime([2015 01 01 00 00 00]));
+%     jd0 = juliandate(datetime([2015 01 01 00 00 00]));
+    jd0 = (2457023.50000-2451544.50000)*86400;
     
     %% Compute for atmospheric density (perigee altitude must be < 1000 km)
-	[rho_p0,H_p0] = atmosphere_og(hp0);          % Input perigee altitude
-    % [rho_p0,H_p0] = atmosphere_gurfil(hp0);          % Input perigee altitude
+% 	[rho_p0,H_p0] = atmosphere_og(hp0);              % (A) Input perigee altitude
+    [rho_p0,H_p0] = atmosphere_gurfil(hp0);          % (B) Input perigee altitude
     % [rho_0,H_p0,h_p0,rho_p0] = atmosphere(hp0*1e-3);  % Input perigee altitude in km
     % r_p0 = (h_p0*1e3)+Re;                             % Initial perigee radius [m]
     % H_p0 = H_p0*1e3;                                  % Initial scale height [m]
@@ -86,7 +97,8 @@ for idx = 1%:length(AMRvec)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%% Numerically integrate equations of motion
-    [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,delta,wa,zhat,rho_p0,rp0,H_p0,1,1,jd0),tspan,x0,options); flag = 0;
+    [t_integrator,xx] = ode113(@(t,x) project_function_ward(t,x,delta,wa,zhat,rho_p0,rp0,H_p0,0,1,jd0),tspan,x0,options); flag = 0;
+%     [t_integrator,xx] = ode113(@(t,x) project_function_ward_ver0(t,x,delta,wa,zhat,rho_p0,rp0,H_p0,1,1,jd0),tspan,x0,options); flag = 0;
     % [t_integrator,xx] = ode113(@(t,x) project_function_gurfil(t,x,mu_earth,delta,wa,zhat,Re,rp0,rho_p0,H_p0),tspan,x0,options); flag = 1;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -162,5 +174,3 @@ if flag_save == 1
 else
 end
 % %}
-
-[YYYY,MM,DD,hh,mm,ss] = jdtogreg(2456594.14461928)
