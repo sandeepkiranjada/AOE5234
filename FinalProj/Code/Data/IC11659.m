@@ -18,7 +18,7 @@ delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
 %
 % Orbit properties
 %
-a0 = realdata(line_no,7)*1e6;
+a0 = realdata(line_no,7)*1e3;
 i0 = realdata(line_no,8);
 raan0 = realdata(line_no,9);
 argp0 = realdata(line_no,10);
