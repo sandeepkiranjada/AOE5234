@@ -18,9 +18,8 @@
 % function [r_Mercury,r_Venus,r_Earth,r_Mars,r_Jupiter,r_Saturn,r_Uranus, ...
 %           r_Neptune,r_Pluto,r_Moon,r_Sun,r_SunSSB] = JPL_Eph_DE430(Mjd_TDB)
 
-function [r_Earth,r_Moon,r_Sun] = JPL_Eph_DE430(Mjd_TDB)
+function [r_Earth,r_Moon,r_Sun] = JPL_Eph_DE430(Mjd_TDB,PC)
 
-global PC
 
 JD = Mjd_TDB + 2400000.5;
 
