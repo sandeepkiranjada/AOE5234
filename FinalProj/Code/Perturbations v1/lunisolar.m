@@ -1,4 +1,4 @@
-function [ dxdt_lunisol ] = lunisolar(t,x,avg_flag,Mjd_UTC_Epoch)
+function [ dxdt_lunisol ] = lunisolar(t,x,avg_flag,Mjd_UTC_Epoch,PC)
 
 % LUNISOLAR Summary of this function goes here
 %   Detailed explanation goes here
@@ -17,7 +17,7 @@ MJD_UTC = Mjd_UTC_Epoch+t/86400;
 MJD_TT = MJD_UTC+TT_UTC/86400;
 MJD_TDB = Mjday_TDB(MJD_TT);
 %
-[~,d_moon_vec_ECI,d_sun_vec_ECI] = JPL_Eph_DE430(MJD_TDB);
+[~,d_moon_vec_ECI,d_sun_vec_ECI] = JPL_Eph_DE430(MJD_TDB,PC);
 %
 d_sun = norm(d_sun_vec_ECI);
 d_sun_hat_vec_ECI = d_sun_vec_ECI/d_sun;
