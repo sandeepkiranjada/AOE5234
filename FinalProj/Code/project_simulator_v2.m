@@ -4,7 +4,7 @@
 
 clc
 clear
-close all
+% close all
 flag_save = 0;
 addpath('./Perturbations')
 addpath('./Data')
@@ -21,7 +21,7 @@ global PC eopdata
 %                               Numerical integration parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-no_yrs = 5;
+no_yrs = 4;
 tf = no_yrs*(365.25*(24*(60*60)));
 tspan = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);

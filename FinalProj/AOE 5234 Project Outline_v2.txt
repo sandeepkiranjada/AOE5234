@@ -1,0 +1,68 @@
+
+Section: Abstract																														Dani
+
+Section: Introduction																													Dani
+Misc intro stuff
+Milankovitch elements
+
+Section: Non-averaged Equations for Perturbed Circumterrestrial Dynamics																Ali
+	J2
+	Lunisolar
+	Atmospheric Drag
+	(a) B
+	(b) \rho Discuss density model
+
+Section: Averaged Equations for Drag Perturbation																						Sandeep
+Start with Gurfil(19)/Ward(35) or Gurfil(20)  a_drag = B\rho v v_vec
+	%(a) B
+	%(b) \rho Discuss density model
+	(c) v_vec Gurfil
+		Gurfil averaging
+	(d) v_vec Ward
+		Ward averaging
+		Note about \rho and Bessel's functions arguments being very small and very large
+
+Section: Averaged Equations with J2, and Third-body Sun and Moon Perturbation															Sandeep
+		Gurfil (49)
+		Gurfil (50)
+
+Section to prove claim 0:																												Dani
+(1) Plot Gurfil vs Ward0 vs Wardw for ####: a(t), e(t), %i(t)
+	identical when:
+		(a) when there is no atmospheric drag
+		(b) when there are no numerical issues
+	different because:
+		(a) approximations of integral
+
+Section to prove claim 1:																												Dani
+(0) Discuss where we get Ariane 5 data
+(1) Plot Gurfil vs Wardw vs Ariane 5; Ariane 5 IC; a(t), e(t)
+	different because:
+		(a) Drag is a function of relative velocity. Without atmospheric rotation, we just have absolute velocity.
+(2) Plot Gurfil vs Wardw; prograde and retrograde orbits IC; a_pro(t), a_ret(t)
+
+Section to prove claim 2:																												Sandeep
+(1) Plot Wardw terms; rho(\beta a e), I0(\beta a e), I1(\beta a e)
+
+Big takeaway: Both averaged implementations of the two models are insufficient by itself												Dani/Sandeep
+Claim 0: Ward and Gurfil are identical when atmospheric rotation in Ward is set to zero.
+Claim 1: Gurfil is insufficient because atmospheric rotation delays reentry for prograde orbits
+Claim 2: Ward is insufficient because the formulation is analytically ill-conditioned i.e. takes a product of a very small number with a very large number
+
+Future work/Nice to have if we have time:																								Dani/Sandeep
+Compare LEO vs GTO
+Compare prograde vs retrograde orbits
+Numerically tractactable Gurfil integral approximations with Ward's atmospheric rotation term
+
+Appendices:
+Milankovitch elements to coe
+__________________________________________________________________________________________________________________
+
+Known Facts:
+
+Discuss the shortcomings of each model (Gurfil vs Ward)
+	-> Gurfil: Show any plot where Gurfil over predicts loss of altitude because of neglecting atmospheric rotation
+	-> Ward:
+	
+The simulated trajectories for the non-averaged equations should be oscillatory about the trajectories from the averaged equations.
+Simulating the non-averaged equations is more computationally expensive.
