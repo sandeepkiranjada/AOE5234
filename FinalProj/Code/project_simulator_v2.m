@@ -6,7 +6,7 @@ clc
 clear
 % close all
 flag_save = 0;
-addpath('./Perturbations')
+addpath('./Perturbations v1')
 addpath('./Data')
 addpath('./../No-Averaged/Matlab codes')
 
@@ -15,7 +15,7 @@ addpath('./../No-Averaged/Matlab codes')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % my_constants
 project_constants
-global PC eopdata
+global eopdata
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               Numerical integration parameters
@@ -51,38 +51,7 @@ noradID = '37239';      % Ariane 5 R/B
 
 switch noradID
     case 'Gurfil'
-        %
-        % Start date and time of simulation
-        %
-        Mjd_UTC_Epoch = Mjday(2015, 01, 01, 00, 00, 00);
-        %
-        % Spacecraft properties
-        %
-        Cd = 2.2;                                   % Drag coefficient of the spacecraft
-        AMR = 0.02;                                 % S/m: Area to mass ratio of the spacecraft [m^2/kg]
-        delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
-        %
-        % Orbit properties
-        %
-        hp0 = 250*1e3;                              % Initial perigee height [m]
-        ha0 = 35943*1e3;                            % Initial apogee hegiht [m]
-        r_p0 = Re+hp0;                              % Initial perigee radius [m]
-        r_a0 = Re+ha0;                              % Initial apogee radius [m]
-        %
-        a0 = (r_a0+r_p0)/2;                         % Initial semi-major axis [m]
-        e0 = 1-r_p0/a0;                             % Initial eccentricity
-        i0 = deg2rad(6);                            % Initial inclination [rad]
-        argp0 = deg2rad(178);                       % Initial argument of perigee [rad]
-        raan0 = deg2rad(60);                        % Initial RAAN [rad]
-        M0 = 0;                                     % Initial mean anomaly [rad]
-        %
-        H0 = sqrt(a0*mu_earth*(1-e0^2));            % Initial angular momentum
-        %
-        % Atmospheric properties
-        %
-        we = 7.2921159e-5;                          % Angular velocity of the earth [rad/s]
-        wa = we;                                    % Angular velocity of the atmosphere in z-direction [rad/s]
-        %
+        ICGURFIL
     case '00049'  % Echo 1A (LEO)
         IC00049
     case '02253'  % PAGEOS-A (Polar)
@@ -134,16 +103,20 @@ avg_flag = 1;
 %
 % (1) for Gurfil
 % (2) for Ward
-drag_model = 1;
+drag_model = 2;
+
+%
+% Define which perturbations to consider
+%   atm drag    lunisolar   J2
+% [ 1/0        1/0        1/0 ]
+pert_fac = [1 1 1]; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                           Numerically integrate equations of motion
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% Numerically integrate equations of motion
-[t_integrator,xx] = ode113(@(t,x) project_function(t,x,delta,wa,rho_p0,r_p0,H_p0,avg_flag,drag_model,Mjd_UTC_Epoch),tspan,x0,options);
-%     [t_intW,xx_W] = ode113(@(t,x) project_function(t,x,delta,wa,zhat,Re,rho_p0,r_p0,H_p0,avg_flag,2,Mjd_UTC_Epoch),tspan,x0,options); flag = 0;
-%     [t_intG,xx_G] = ode113(@(t,x) project_function(t,x,delta,wa,zhat,Re,rho_p0,r_p0,H_p0,avg_flag,1,Mjd_UTC_Epoch),tspan,x0,options); flag = 1;
+[t_integrator,xx] = ode113(@(t,x) project_function(t,x,delta,wa,rho_p0,r_p0,H_p0,avg_flag,drag_model,Mjd_UTC_Epoch,pert_fac,PC),tspan,x0,options);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,6 +1,6 @@
 load 02253_data
 
-line_no = 1; % This is the one that broke up
+line_no = 6; % This is the one that broke up
 %
 % Start date and time of simulation
 %

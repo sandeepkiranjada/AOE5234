@@ -1,6 +1,6 @@
 load 19218_data
 
-line_no = 1;
+line_no = 10;
 %
 % Start date and time of simulation
 %

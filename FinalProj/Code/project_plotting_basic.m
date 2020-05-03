@@ -3,7 +3,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 t_plot = (((t_integrator/60)/60)/24)/365;
-strvec = {'k','--k',':k','k','--k',':k'};
+strvec = {'--k','k',':k','k','--k',':k'};
+% strvec = {'r','--r',':k','k','--k',':k'};
+% strvec = {'b','--b',':k','k','--k',':k'};
 str = strvec{idx};
 picscale = 1;
 
@@ -13,10 +15,15 @@ else
     count = 8;
 end
 
+UTC_datetime = datetime(realdata(line_no:end,1:6));
+UTC_datetime = UTC_datetime-UTC_datetime(1);
+time = datenum(UTC_datetime)/365.25;
+
 f = figure(count + 1);
 f.Units = 'centimeters';
 % f.Position = picscale*[1 26 18 12];
-plot(t_plot,a*1e-3,str,'linewidth',1); grid on; hold on
+plot(t_plot,a*1e-3,strvec{1},'linewidth',1); grid on; hold on
+plot(time,realdata(line_no:end,7),strvec{2},'linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('a (km)');
 xlim([0 no_yrs]);
 % ylim([1.6e4 2.5e4]);
@@ -26,7 +33,8 @@ xlim([0 no_yrs]);
 f = figure(count + 2);
 f.Units = 'centimeters';
 % f.Position = picscale*[1 13.5 18 12];
-plot(t_plot,e,str,'linewidth',1); grid on; hold on
+plot(t_plot,e,strvec{1},'linewidth',1); grid on; hold on
+plot(time,realdata(line_no:end,11),strvec{2},'linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('e ');
 xlim([0 no_yrs]);
 % ylim([0.58 0.74]);
@@ -34,7 +42,8 @@ xlim([0 no_yrs]);
 f = figure(count + 3);
 f.Units = 'centimeters';
 % f.Position = picscale*[1 1 12 12];
-plot(t_plot,inc,str,'linewidth',1); grid on; hold on
+plot(t_plot,inc,strvec{1},'linewidth',1); grid on; hold on
+plot(time,realdata(line_no:end,8)*180/pi,strvec{2},'linewidth',1); grid on; hold on
 xlabel('Elapsed time (yrs)'); ylabel('i (deg)');
 xlim([0 no_yrs]);
 

@@ -27,7 +27,7 @@ Section: Averaged Equations with J2, and Third-body Sun and Moon Perturbation			
 		Gurfil (50)
 
 Section to prove claim 0:																												Dani
-(1) Plot Gurfil vs Ward0 vs Wardw for ####: a(t), e(t), %i(t)
+(1) Plot Gurfil vs Ward0 vs Wardw; GTO IC; a(t), e(t), %i(t)
 	identical when:
 		(a) when there is no atmospheric drag
 		(b) when there are no numerical issues
@@ -36,13 +36,13 @@ Section to prove claim 0:																												Dani
 
 Section to prove claim 1:																												Dani
 (0) Discuss where we get Ariane 5 data
-(1) Plot Gurfil vs Wardw vs Ariane 5; Ariane 5 IC; a(t), e(t)
+(1) Plot Gurfil vs Wardw vs NonAve vs Ariane 5; Ariane 5 IC; a(t), e(t), i(t)
 	different because:
 		(a) Drag is a function of relative velocity. Without atmospheric rotation, we just have absolute velocity.
 (2) Plot Gurfil vs Wardw; prograde and retrograde orbits IC; a_pro(t), a_ret(t)
 
 Section to prove claim 2:																												Sandeep
-(1) Plot Wardw terms; rho(\beta a e), I0(\beta a e), I1(\beta a e)
+(1) Plot Wardw terms; Ariane 4; rho(\beta a e), I0(\beta a e), I1(\beta a e) , and I2(\beta a e)
 
 Big takeaway: Both averaged implementations of the two models are insufficient by itself												Dani/Sandeep
 Claim 0: Ward and Gurfil are identical when atmospheric rotation in Ward is set to zero.
@@ -56,6 +56,7 @@ Numerically tractactable Gurfil integral approximations with Ward's atmospheric 
 
 Appendices:
 Milankovitch elements to coe
+Other plots
 __________________________________________________________________________________________________________________
 
 Known Facts:
