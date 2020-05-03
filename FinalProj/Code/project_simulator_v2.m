@@ -4,7 +4,7 @@
 
 clc
 clear
-% close all
+close all
 flag_save = 0;
 addpath('./Perturbations v1')
 addpath('./Data')
@@ -46,8 +46,8 @@ PC = DE430Coeff;
 % noradID = '02324';      % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      % Ariane 1
 % noradID = '16657';      % Ariane 3 R/B
-noradID = '19218';      % Ariane 44LP R/B
-% noradID = '37239';      % Ariane 5 R/B
+% noradID = '19218';      % Ariane 44LP R/B
+noradID = '37239';      % Ariane 5 R/B
 
 switch noradID
     case 'Gurfil'
