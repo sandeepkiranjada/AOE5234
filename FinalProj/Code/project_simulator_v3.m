@@ -4,8 +4,8 @@
 
 clc
 clear
-close all
-flag_save = 1;
+% close all
+flag_save = 0;
 addpath('./Formulation');
 addpath('./Perturbations v1')
 addpath('./Data')
