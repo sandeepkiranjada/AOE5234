@@ -2,7 +2,12 @@
 %                                         Plot results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% clear
 close all
+% %
+% % Load data
+% %
+% load 'GurfWardNoAveGurfil 8yrs 1  1  1 data.mat'
 
 %{
 Input: 

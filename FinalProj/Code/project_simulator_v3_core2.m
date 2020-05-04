@@ -5,7 +5,7 @@
 clc
 clear
 % close all
-flag_save = 1;
+flag_save = 0;
 addpath('./Formulation');
 addpath('./Perturbations v1')
 addpath('./Data')
@@ -21,16 +21,6 @@ project_constants
 global eopdata
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                               Numerical integration parameters
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-no_yrs = 11.5;
-tf = no_yrs*(365.25*(24*(60*60)));
-tspan = [0 tf];
-options = odeset('RelTol',1e-12,'AbsTol',1e-12);
-% options = odeset('RelTol',1e-12,'AbsTol',1e-12,'Events',@myEvent);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                         Read Ephemeris
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -44,14 +34,14 @@ PC = DE430Coeff;
 %                                Spacecraft Initial Conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% noradID = 'Gurfil';     % Gurfil
-% noradID = '00049';      % Echo 1A (LEO)
-% noradID = '02253';      % PAGEOS-A (Polar)
-noradID = '02324';      % PasComSat/OV1-8 (LEO)
-% noradID = '11659';      % Ariane 1
-% noradID = '16657';      % Ariane 3 R/B
-% noradID = '19218';      % Ariane 44LP R/B
-% noradID = '37239';      % Ariane 5 R/B
+% noradID = 'Gurfil';     no_yrs = 10;   % Gurfil
+% noradID = '00049';      no_yrs = 05;   % Echo 1A (LEO)
+% noradID = '02253';      no_yrs = 05;   % PAGEOS-A (Polar)
+% noradID = '02324';      no_yrs = 11;   % PasComSat/OV1-8 (LEO)
+% noradID = '11659';      no_yrs = 05;   % Ariane 1
+% noradID = '16657';      no_yrs = 05;   % Ariane 3 R/B
+% noradID = '19218';      no_yrs = 05;   % Ariane 44LP R/B
+noradID = '37239';      no_yrs = 05;   % Ariane 5 R/B
 
 switch noradID
     case 'Gurfil'
@@ -72,9 +62,18 @@ switch noradID
         IC37239    
 end
 
-%
-% Optimizing eopdata for Non-Averaged Simulations
-%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                               Numerical integration parameters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tf = no_yrs*(365.25*(24*(60*60)));
+tspan = [0 tf];
+options = odeset('RelTol',1e-12,'AbsTol',1e-12);
+% options = odeset('RelTol',1e-12,'AbsTol',1e-12,'Events',@myEvent);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                        Optimizing eopdata for Non-Averaged Simulations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Mjd_UTC = Mjd_UTC_Epoch;
 JD = Mjd_UTC+2400000.5;
 i_PC = find(PC(:,1)<=JD & JD<=PC(:,2),1,'first');
@@ -157,11 +156,13 @@ x0 = [r0;v0];
 wa = we;
 [t,x] = ode113(@(t,x) nonave(t,x,AMR,Cd,r_p0,rho_p0,H_p0,Mjd_UTC_Epoch,pert_fac,wa,PC),tspan,x0,options); 
 [ecc_p,a_p,incl_p,omega_p,argp_p,nu_p,p_p,eps_p] = rv2coe4vec(x(:,1:3),x(:,4:6),mu_earth);
+naw = [t,a_p,incl_p,omega_p,argp_p,ecc_p,nu_p,p_p,eps_p];
 
 % Non-averaged wa = 0
 wa = we;
 [t2,x] = ode113(@(t,x) nonave(t,x,AMR,Cd,r_p0,rho_p0,H_p0,Mjd_UTC_Epoch,pert_fac,wa,PC),tspan,x0,options); 
 [ecc_p2,a_p2,incl_p2,omega_p2,argp_p2,nu_p2,p_p2,eps_p2] = rv2coe4vec(x(:,1:3),x(:,4:6),mu_earth);
+na0 = [t2,a_p2,incl_p2,omega_p2,argp_p2,ecc_p2,nu_p2,p_p2,eps_p2];
 
 clear t_integrator xx
 
@@ -176,14 +177,25 @@ if flag_save == 1
         figure(f);
         set(gca,'FontSize',12);
         if strcmp(noradID,'Gurfil')
-            figname = sprintf(['GurfWardNoAve' noradID ' ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
+            figname = sprintf(['GurfWardNoAve' noradID ' ' num2str(no_yrs) 'yrs ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
         else
-            figname = sprintf(['GurfWardNoAveReal' noradID ' ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
+            figname = sprintf(['GurfWardNoAveReal' noradID ' ' num2str(no_yrs) 'yrs ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
         end
         print(q(f),fullfile(pwd,'Figures',figname),'-dpng','-r300');
         savefig(q(f),fullfile(pwd,'Figures',figname));
     end    
 else
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                        Save Mat Files
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if strcmp(noradID,'Gurfil')
+    dataname = sprintf(['GurfWardNoAve' noradID ' ' num2str(no_yrs) 'yrs ' num2str(pert_fac) ' data.mat']);
+    save(fullfile(pwd,'Data',dataname),'noradID','no_yrs','gurfil','wardw','ward0','naw','na0');
+else
+    dataname = sprintf(['GurfWardNoAveReal' noradID ' ' num2str(no_yrs) 'yrs ' num2str(pert_fac) ' data.mat']);
+    save(fullfile(pwd,'Data',dataname),'noradID','no_yrs','gurfil','wardw','ward0','naw','na0','realdata');
 end
 
 toc
