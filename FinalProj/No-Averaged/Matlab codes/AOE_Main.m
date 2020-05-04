@@ -2,6 +2,10 @@ clear
 clc
 % close all
 
+% addpath('C:\Users\ahassani\Documents\GitHub\AOE5234\FinalProj\Code\Data')
+addpath('./../../Code/Data')
+
+
 global PC eopdata
 drag_flag = 1;
 J2_flag = 1;
@@ -26,7 +30,7 @@ PC = PC(i_PC:end,:);
 mjd = (floor(Mjd_UTC));
 i_epo = find(mjd==eopdata(4,:),1,'first');
 if isempty(i_epo)~=1
-eopdata = eopdata(:,i_epo:end);
+    eopdata = eopdata(:,i_epo:end);
 end
 
 %%
@@ -60,7 +64,7 @@ AMR=0.0153; %11.056;   %0.02;   % Area to mass ratio
 %% Solving ODE
 
 no_yrs  = (2);
-tf      = no_yrs*(365*(24*(60*60)));
+tf      = no_yrs*(365.25*(24*(60*60)));
 tspan   = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
 x0      = [r0;v0;r0;v0];

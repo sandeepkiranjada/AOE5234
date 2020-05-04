@@ -11,6 +11,7 @@ addpath('./Perturbations v1')
 addpath('./Data')
 addpath('./Post')
 addpath('./../No-Averaged/Matlab codes')
+tic
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                  Define Global Variables
@@ -23,7 +24,7 @@ global eopdata
 %                               Numerical integration parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-no_yrs = 4;
+no_yrs = 5;
 tf = no_yrs*(365.25*(24*(60*60)));
 tspan = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12);
@@ -42,14 +43,14 @@ PC = DE430Coeff;
 %                                Spacecraft Initial Conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% noradID = 'Gurfil';     % Gurfil
+noradID = 'Gurfil';     % Gurfil
 % noradID = '00049';      % Echo 1A (LEO)
 % noradID = '02253';      % PAGEOS-A (Polar)
 % noradID = '02324';      % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      % Ariane 1
 % noradID = '16657';      % Ariane 3 R/B
 % noradID = '19218';      % Ariane 44LP R/B
-noradID = '37239';      % Ariane 5 R/B
+% noradID = '37239';      % Ariane 5 R/B
 
 switch noradID
     case 'Gurfil'
@@ -68,6 +69,19 @@ switch noradID
         IC19218
     case '37239'  % Ariane 5 R/B
         IC37239    
+end
+
+%
+% Optimizing eopdata for Non-Averaged Simulations
+%
+Mjd_UTC = Mjd_UTC_Epoch;
+JD = Mjd_UTC+2400000.5;
+i_PC = find(PC(:,1)<=JD & JD<=PC(:,2),1,'first');
+PC = PC(i_PC:end,:);
+mjd = (floor(Mjd_UTC));
+i_epo = find(mjd==eopdata(4,:),1,'first');
+if isempty(i_epo)~=1
+    eopdata = eopdata(:,i_epo:end);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,7 +152,12 @@ wa = 0;
 ward0 = milankovitch2coe(t_integrator,xx); 
 
 % Non-averaged wa = we
-[t,x] = ode113(@(t,x) NA_orbit(t,x,AMR,C_D,r_p0,rho_p,re,H_rho,muu,J2,Mjd_UTC,drag_flag,J2_flag,Lunisolar_flag,atmo_rotation_flag),tspan,x0,options); 
+
+x0 = [r0;v0];
+wa = we;
+[t,x] = ode113(@(t,x) nonave(t,x,AMR,Cd,r_p0,rho_p0,H_p0,Mjd_UTC_Epoch,pert_fac,wa,PC),tspan,x0,options); 
+[ecc_p,a_p,incl_p,omega_p,argp_p,nu_p,p_p,eps_p] = rv2coe4vec(x(:,1:3),x(:,4:6),mu_earth);
+
 
 clear t_integrator xx
 
@@ -153,12 +172,21 @@ if flag_save == 1
         figure(f);
         set(gca,'FontSize',12);
         if strcmp(noradID,'Gurfil')
-            figname = sprintf(['GurfWard' noradID ' ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
+            figname = sprintf(['GurfWardNoAve' noradID ' ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
         else
-            figname = sprintf(['GurfWardReal' noradID ' ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
+            figname = sprintf(['GurfWardNoAveReal' noradID ' ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
         end
         print(q(f),fullfile(pwd,'Figures',figname),'-dpng','-r300');
         savefig(q(f),fullfile(pwd,'Figures',figname));
     end    
 else
+end
+
+toc
+
+%% Ode Stop Condition
+function [value, isterminal, direction] = myEvent(t, x)
+value      = (([x(1);x(2);x(3)]'*[x(1);x(2);x(3)])^0.5 < 6478137);
+isterminal = 1;   % Stop the integration
+direction  = 0;
 end
