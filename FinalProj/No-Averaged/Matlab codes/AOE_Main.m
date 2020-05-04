@@ -1,7 +1,8 @@
 clear
 clc
 % close all
-addpath('C:\Users\ahassani\Documents\GitHub\AOE5234\FinalProj\Code\Data')
+addpath('./Data')
+% addpath('C:\Users\ahassani\Documents\GitHub\AOE5234\FinalProj\Code\Data')
 
 %% Flags
 drag_flag = 1;
@@ -73,7 +74,7 @@ end
 
 %% Solving ODE
 
-no_yrs  = (4);
+no_yrs  = (2);
 tf      = no_yrs*(365.25*(24*(60*60)));
 tspan   = [0 tf];
 options = odeset('RelTol',1e-12,'AbsTol',1e-12,'Events', @myEvent);
