@@ -1,8 +1,8 @@
-function [e,a,inc,raan,argp,nu,p,eps] = rv2coe4vec(r,v,muu)
+function [e,a,inc,raan,argp,nu,p] = rv2coe4vec(r,v,mu)
 %
 % Preliminary calculations
 %
-muu = repmat(muu,length(r),1);
+mu = repmat(mu,length(r),1);
 rmag = (sum(r.^2,2)).^(1/2);        % Calculate magnitude of r
 vmag = (sum(v.^2,2)).^(1/2);        % Calculate magnitude of v
 H = cross(r,v,2);                   % Angular momentum vector
@@ -11,16 +11,16 @@ k = repmat([0, 0, 1],length(r),1);  % Unit vector in the z-direction for ECI
 n = cross(k,H,2);                   % Line of nodes vector pointing in the direction of the ascending node
 n_mag = (sum(n.^2,2)).^(1/2);       % Calculate magnitude of n
 n = n./n_mag;                       % Line of nodes vector pointing in the direction of the ascending node
-eps = 0.5*vmag.^2 - muu./rmag;      % Specific mechanical energy [DU^2/TU^2]
+eps = 0.5*vmag.^2 - mu./rmag;        % Specific mechanical energy [DU^2/TU^2]
 %
 % (1) Eccentricity
 %
-e_vec = (cross(v,H,2)-muu.*r./rmag)./muu;
+e_vec = (cross(v,H,2)-mu.*r./rmag)./mu;
 e = (sum(e_vec.^2,2)).^(1/2);           % Calculate magnitude of e
 %
 % (2) Semi-major axis (a) [DU]
 %
-a = -0.5*muu./eps;
+a = -0.5*mu./eps;
 a(e==1) = inf;
 %
 % (3) Inclination [deg]
@@ -30,7 +30,7 @@ inc = acosd(dot(k,H,2)./Hmag);
 % (4) Right ascension of the ascending node
 %
 raan = acosd(n(:,1));
-raan(n(:,2) < 0) = 360 -raan(n(:,2) < 0);
+raan(n(:,2) < 0) = 360 - raan(n(:,2) < 0);
 %
 % (5) Argument of perigee [deg]
 %
