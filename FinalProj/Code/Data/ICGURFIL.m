@@ -30,6 +30,7 @@ M0 = 0;                                     % Initial mean anomaly [rad]
 p0 = a0*(1-e0^2);                           %- semilatus rectum              m
 nu0 = 0;
 [r0,v0]  = coe2rv(p0/1e3,e0,i0,raan0,argp0,nu0);
+r0=r0*1e3;v0=v0*1e3;
 H0 = sqrt(a0*mu_earth*(1-e0^2));            % Initial angular momentum
 
 %
