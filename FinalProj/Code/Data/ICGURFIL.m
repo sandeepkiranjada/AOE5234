@@ -22,6 +22,9 @@
         argp0 = deg2rad(178);                       % Initial argument of perigee [rad]
         raan0 = deg2rad(60);                        % Initial RAAN [rad]
         M0 = 0;                                     % Initial mean anomaly [rad]
+        p0 = a0*(1-e0^2);                           %- semilatus rectum              m
+        nu0 = 0;
+        [r0,v0]  = coe2rv(p0/1e3,e0,i0,raan0,argp0,nu0);
         %
         H0 = sqrt(a0*mu_earth*(1-e0^2));            % Initial angular momentum
         %
