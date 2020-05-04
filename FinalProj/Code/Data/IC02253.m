@@ -2,7 +2,7 @@
 %                              Initial conditions for PAGEOS-A (Polar)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%
+%                              1  ,2 ,3 ,4 ,5 ,6 ,7, 8 , 9  , 10 ,11 ,12,13,14,15,16,17,18
 % Load real data: realdata = [YYYY,MM,DD,hh,mm,ss,a,inc,RAAN,argp,ecc,M,rx,ry,rz,vx,vy,vz]
 %
 load 02253_data
@@ -36,8 +36,8 @@ argp0 = realdata(line_no,10);
 e0 = realdata(line_no,11);
 M0 = realdata(line_no,12);
 nu0 = truanamoly(M0,e0);
-r0 = realdata(line_no,13:15)';
-v0 = realdata(line_no,16:18)';
+r0 = realdata(line_no,13:15)';                 % Initial position vector
+v0 = realdata(line_no,16:18)';                 % Initial velocity vector
 r_p0 = a0*(1-e0);                              % Radius of perigee
 hp0 = r_p0-Re;                                 % Perigee altitude
 r_a0 = (2*a0-r_p0);                            % Radius of apogee

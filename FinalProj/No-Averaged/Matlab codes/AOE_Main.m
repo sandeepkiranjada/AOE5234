@@ -1,8 +1,10 @@
 clear
 clc
 % close all
-addpath('./Data')
+
 % addpath('C:\Users\ahassani\Documents\GitHub\AOE5234\FinalProj\Code\Data')
+addpath('./../../Code/Data')
+
 
 %% Flags
 drag_flag = 1;
@@ -63,7 +65,7 @@ PC = PC(i_PC:end,:);
 mjd = (floor(Mjd_UTC));
 i_epo = find(mjd==eopdata(4,:),1,'first');
 if isempty(i_epo)~=1
-eopdata = eopdata(:,i_epo:end);
+    eopdata = eopdata(:,i_epo:end);
 end
 
 %%  Calculating Initial Condition for Density 
