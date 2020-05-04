@@ -37,15 +37,13 @@ argp0 = realdata(line_no,10);
 e0 = realdata(line_no,11);
 M0 = realdata(line_no,12);
 nu0 = truanamoly(M0,e0);
-r0 = realdata(line_no,13:15)';
-v0 = realdata(line_no,16:18)';
+r0 = realdata(line_no,13:15)';                 % Initial position vector
+v0 = realdata(line_no,16:18)';                 % Initial velocity vector
 r_p0 = a0*(1-e0);                              % Radius of perigee
 hp0 = r_p0-Re;                                 % Perigee altitude
 r_a0 = (2*a0-r_p0);                            % Radius of apogee
 ha0 = r_a0-Re;                                 % Apogee altitude
 H0 = sqrt(a0*mu_earth*(1-e0^2));               % Initial angular momentum
-r0 = realdata(line_no,13:15);                  % Initial position vector
-v0 = realdata(line_no,16:18);                  % Initial velocity vector
 
 %
 % Atmospheric properties
