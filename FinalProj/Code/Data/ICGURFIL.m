@@ -27,6 +27,10 @@ i0 = deg2rad(6);                            % Initial inclination [rad]
 argp0 = deg2rad(178);                       % Initial argument of perigee [rad]
 raan0 = deg2rad(60);                        % Initial RAAN [rad]
 M0 = 0;                                     % Initial mean anomaly [rad]
+p0 = a0*(1-e0^2);                           %- semilatus rectum              m
+nu0 = 0;
+[r0,v0]  = coe2rv(p0/1e3,e0,i0,raan0,argp0,nu0);
+r0=r0*1e3;v0=v0*1e3;
 H0 = sqrt(a0*mu_earth*(1-e0^2));            % Initial angular momentum
 
 %
@@ -34,3 +38,4 @@ H0 = sqrt(a0*mu_earth*(1-e0^2));            % Initial angular momentum
 %
 we = 7.2921159e-5;                          % Angular velocity of the earth [rad/s]
 wa = we;                                    % Angular velocity of the atmosphere in z-direction [rad/s]
+
