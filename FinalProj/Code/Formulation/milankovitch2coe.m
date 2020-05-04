@@ -36,4 +36,4 @@ argp = rad2deg(acos(dot(evec',c1)./(e.*c2)));
 % ra = (2*a-rp);                              % Radius of apogee
 % ha = ra-Re;                                 % Apogee altitude
 
-tcoe = [t_integrator,a,inc,raan,argp,e];
+tcoe = [t_integrator,a',inc',raan',argp',e'];

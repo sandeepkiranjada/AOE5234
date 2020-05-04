@@ -137,4 +137,6 @@ wa = 0;
                                                         Mjd_UTC_Epoch,pert_fac,PC),tspan,x0,options);
 ward0 = milankovitch2coe(t_integrator,xx); 
 
+clear t_integrator xx
+
 project_plotting_GurfWardReal
