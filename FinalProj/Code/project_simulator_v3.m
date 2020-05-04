@@ -152,6 +152,7 @@ wa = 0;
 ward0 = milankovitch2coe(t_integrator,xx); 
 
 % Non-averaged wa = we
+
 x0 = [r0;v0];
 wa = we;
 [t,x] = ode113(@(t,x) nonave(t,x,AMR,Cd,r_p0,rho_p0,H_p0,Mjd_UTC_Epoch,pert_fac,wa,PC),tspan,x0,options); 
@@ -163,6 +164,7 @@ wa = we;
 [t2,x] = ode113(@(t,x) nonave(t,x,AMR,Cd,r_p0,rho_p0,H_p0,Mjd_UTC_Epoch,pert_fac,wa,PC),tspan,x0,options); 
 [ecc_p2,a_p2,incl_p2,omega_p2,argp_p2,nu_p2,p_p2,eps_p2] = rv2coe4vec(x(:,1:3),x(:,4:6),mu_earth);
 na0 = [t2,a_p2,incl_p2,omega_p2,argp_p2,ecc_p2,nu_p2,p_p2,eps_p2];
+
 
 clear t_integrator xx
 
