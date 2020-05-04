@@ -4,8 +4,8 @@
 
 clc
 clear
-% close all
-flag_save = 0;
+close all
+flag_save = 1;
 addpath('./Formulation');
 addpath('./Perturbations v1')
 addpath('./Data')
@@ -34,8 +34,8 @@ PC = DE430Coeff;
 %                                Spacecraft Initial Conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-noradID = 'Gurfil';     no_yrs = 10;   % Gurfil
-% noradID = '00049';      no_yrs = 05;   % Echo 1A (LEO)
+% noradID = 'Gurfil';     no_yrs = 10;   % Gurfil
+noradID = '00049';      no_yrs = 05;   % Echo 1A (LEO)
 % noradID = '02253';      no_yrs = 05;   % PAGEOS-A (Polar)
 % noradID = '02324';      no_yrs = 11;   % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      no_yrs = 05;   % Ariane 1
