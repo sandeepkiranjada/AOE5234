@@ -5,7 +5,7 @@
 clc
 clear
 close all
-flag_save = 0;
+flag_save = 1;
 addpath('./Formulation');
 addpath('./Perturbations v1')
 addpath('./Data')
@@ -42,14 +42,14 @@ PC = DE430Coeff;
 %                                Spacecraft Initial Conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-noradID = 'Gurfil';     % Gurfil
+% noradID = 'Gurfil';     % Gurfil
 % noradID = '00049';      % Echo 1A (LEO)
 % noradID = '02253';      % PAGEOS-A (Polar)
 % noradID = '02324';      % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      % Ariane 1
 % noradID = '16657';      % Ariane 3 R/B
 % noradID = '19218';      % Ariane 44LP R/B
-% noradID = '37239';      % Ariane 5 R/B
+noradID = '37239';      % Ariane 5 R/B
 
 switch noradID
     case 'Gurfil'
@@ -107,8 +107,8 @@ avg_flag = 1;
 
 %
 % Define which perturbations to consider
-%   atm drag    lunisolar   J2
-% [ 1/0        1/0        1/0 ]
+%   atm drag   lunisolar   J2
+% [   1/0         1/0      1/0 ]
 pert_fac = [1 1 1]; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -137,6 +137,28 @@ wa = 0;
                                                         Mjd_UTC_Epoch,pert_fac,PC),tspan,x0,options);
 ward0 = milankovitch2coe(t_integrator,xx); 
 
+% Non-averaged wa = we
+[t,x] = ode113(@(t,x) NA_orbit(t,x,AMR,C_D,r_p0,rho_p,re,H_rho,muu,J2,Mjd_UTC,drag_flag,J2_flag,Lunisolar_flag,atmo_rotation_flag),tspan,x0,options); 
+
 clear t_integrator xx
 
 project_plotting_GurfWardReal
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                        Save Images
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+q = get(0,'children');
+if flag_save == 1
+    for f = 1:length(q)
+        figure(f);
+        set(gca,'FontSize',12);
+        if strcmp(noradID,'Gurfil')
+            figname = sprintf(['GurfWard' noradID ' ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
+        else
+            figname = sprintf(['GurfWardReal' noradID ' ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
+        end
+        print(q(f),fullfile(pwd,'Figures',figname),'-dpng','-r300');
+        savefig(q(f),fullfile(pwd,'Figures',figname));
+    end    
+else
+end

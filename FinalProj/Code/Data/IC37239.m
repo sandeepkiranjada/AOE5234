@@ -2,8 +2,8 @@
 %                                Initial conditions for Ariane 5 R/B
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%
-% Load real data: realdata = [YYYY,MM,DD,hh,mm,ss,a,inc,RAAN,argp,ecc,M,rx,ry,rz,vx,vy,vz]
+%                              1  ,2 ,3 ,4 ,5 ,6 ,7, 8 , 9  , 10 ,11 ,12,13,14,15,16,17,18
+% Load real data: realdata = [YYYY,MM,DD,hh,mm,ss,a,inc,RAAN,argp,ecc,MA,rx,ry,rz,vx,vy,vz]
 %
 load 37239_data
 
@@ -42,6 +42,8 @@ hp0 = r_p0-Re;                                 % Perigee altitude
 r_a0 = (2*a0-r_p0);                            % Radius of apogee
 ha0 = r_a0-Re;                                 % Apogee altitude
 H0 = sqrt(a0*mu_earth*(1-e0^2));               % Initial angular momentum
+r0 = realdata(line_no,13:15);                  % Initial position vector
+v0 = realdata(line_no,16:18);                  % Initial velocity vector
 
 %
 % Atmospheric properties
