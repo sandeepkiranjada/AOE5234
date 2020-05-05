@@ -2,48 +2,7 @@
 %                                         Plot results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-clc; clear
 close all
-
-flag_save_figs = 1;
-
-addpath('./Perturbations v1')
-addpath('./Data')
-addpath('./Post')
-addpath('./../No-Averaged/Matlab codes')
-project_constants
-
-%
-% Load data
-%
-% Gurfil
-ICGURFIL
-filename = 'Gurfil Wardw Ward0 IC_Gurfil 10yrs 1  0  0 data'; % Drag only
-% filename = 'Gurfil Wardw Ward0 IC_Gurfil 10yrs 1  1  1 data'; % All perturbations
-% %
-% % '00049' Echo 1A (LEO)
-% IC00049
-% %
-% % '02253' PAGEOS-A (Polar)
-% IC02253
-% filename = 'Gurfil Wardw Ward0 Real IC_02253 51yrs 1  1  1 datal'; % All perturbations
-% %
-% % '02324' PasComSat/OV1-8 (LEO)
-% IC02324
-% filename = 'Gurfil Wardw Ward0 Real IC_02324 11yrs 1  1  1 data'; % All perturbations
-% %
-% % '11659' Ariane 1
-% IC11659
-% filename = 'Gurfil Wardw Ward0 Real IC_11659 3yrs 1  1  1 data'; % All perturbations
-% %
-% % '19218' Ariane 44LP R/B
-% IC19218
-% filename = 'Gurfil Wardw Ward0 Real IC_19218 6yrs 1  1  1 data'; % All perturbations
-% % '37239' Ariane 5 R/B
-% IC37239
-% filename = 'Gurfil Wardw Ward0 Real IC_37239 5yrs 1  1  1 data'; % All perturbations
-
-load(filename)
 
 %{
 Input: 
@@ -140,32 +99,3 @@ grid on;
 xlabel('Elapsed time (yrs)'); ylabel('i (deg)');
 xlim([0 no_yrs]);
 legend(str_legend,'Location','Best');
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                        Save Images
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Define string of active simulations (simulations with flag == 1)
-str_whichsim = [1*flag_gurfil; 2*flag_wardw; 3*flag_ward0; 4*flag_naw; 5*flag_na0; 6*exist('realdata','var')];
-str_whichsim = str_whichsim(str_whichsim~=0);
-str_sim_all = {'Gurfil'; 'Wardw'; 'Ward0'; 'NAw'; 'NA0'; 'Real'};
-str1 = strjoin(str_sim_all(str_whichsim));
-%
-% Define filename for .mat file
-str_whichprts = [1*pert_fac(1); 2*pert_fac(2); 3*pert_fac(3)];
-str_whichprts = str_whichprts(str_whichprts~=0);
-str_prts_all = {'drag','lunisolar','J2'};
-str2 = strjoin(str_prts_all(str_whichprts));
-
-q = get(0,'children');
-for f = 1:length(q)
-    figure(f);
-    set(gca,'FontSize',12);
-    set(gcf,'color','w');
-        figname = sprintf([str1 ' ' str2 ' Figure ' num2str(length(q)+1-f)]);
-    if flag_save_figs == 1
-%         print(q(f),fullfile(pwd,'Figures',figname),'-deps');         % Save as .eps file
-        print(q(f),fullfile(pwd,'Figures',figname),'-dpng','-r300'); % Save as bitmap file
-%         savefig(q(f),fullfile(pwd,'Figures',figname));               % Save as Matlab figure
-    end
-end
