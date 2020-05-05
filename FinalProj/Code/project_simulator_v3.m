@@ -19,7 +19,7 @@ tic
 flag_gurfil = 1;    % Gurfil
 flag_wardw  = 1;    % Ward wa = we
 flag_ward0  = 1;    % Ward wa = 0
-flag_naw    = 1;    % Non-averaged wa = we
+flag_naw    = 0;    % Non-averaged wa = we
 flag_na0    = 0;    % Non-averaged wa = 0
 flags = {'flag_gurfil','flag_wardw','flag_ward0','flag_naw','flag_na0'};
 
@@ -43,14 +43,14 @@ PC = DE430Coeff;
 %                                Spacecraft Initial Conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% noradID = 'Gurfil';     no_yrs = 10;   % Gurfil
+noradID = 'Gurfil';     no_yrs = 10;   % Gurfil
 % noradID = '00049';      no_yrs = 05;   % Echo 1A (LEO)
 % noradID = '02253';      no_yrs = 51;   % PAGEOS-A (Polar)
 % noradID = '02324';      no_yrs = 11;   % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      no_yrs = 03;   % Ariane 1
 % noradID = '16657';      no_yrs = 05;   % Ariane 3 R/B
 % noradID = '19218';      no_yrs = 06;   % Ariane 44LP R/B
-noradID = '37239';      no_yrs = 03;   % Ariane 5 R/B
+% noradID = '37239';      no_yrs = 04;   % Ariane 5 R/B
 
 switch noradID
     case 'Gurfil'
