@@ -1,0 +1,8 @@
+IC File	    Norad ID  Z	        Description
+ICGURFIL	Gurfil	  411.76	Gurfil
+IC00049		00049	    0.3183	Echo 1A (LEO)
+IC02253		02253	    0.2593	PAGEOS-A (Polar)
+IC02324		02324	    0.0313	PasComSat/OV1-8 (LEO)
+IC11659		11659	  801.5171	Ariane 1
+IC19218		19218	  828.8633	Ariane 44LP R/B
+IC37239		37239	  507.9947	Ariane 5 R/B
