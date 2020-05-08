@@ -125,7 +125,7 @@ avg_flag = 1;
 %
 %   atm drag   lunisolar   J2
 % [   1/0         1/0      1/0 ]
-pert_fac = [1 0 0]; 
+pert_fac = [1 1 1]; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                           Numerically integrate equations of motion
@@ -187,7 +187,9 @@ if flag_save_figs == 1
     for f = 1:length(q)
         figure(f);
         figname = sprintf(['AMR Wardw ' str2 ' Figure ' num2str(length(q)+1-f,'%01.0f')]);
-        print(q(f),fullfile(pwd,'Figures/Ward AMR',figname),'-dpng','-r300');
+        saveas(q(f),fullfile(pwd,'Figures/Ward AMR/EPS',figname),'epsc'); % Save as .eps file
+        print(q(f),fullfile(pwd,'Figures/Ward AMR/PNG',figname),'-dpng','-r300'); % Save as bitmap file
+        savefig(q(f),fullfile(pwd,'Figures/Ward AMR/FIG',figname));               % Save as Matlab figure
     end
     
 else
