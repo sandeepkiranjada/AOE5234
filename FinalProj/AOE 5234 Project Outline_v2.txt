@@ -11,6 +11,7 @@ Section: Non-averaged Equations for Perturbed Circumterrestrial Dynamics								
 	Atmospheric Drag
 	(a) B
 	(b) \rho Discuss density model
+(1) Plot Ward vs NonAve; GTO IC; a(t), e(t), i(t) (all perturbations)
 
 Section: Averaged Equations for Drag Perturbation																						Sandeep
 Start with Gurfil(19)/Ward(35) or Gurfil(20)  a_drag = B\rho v v_vec
@@ -35,11 +36,17 @@ Section to prove claim 0:																												Dani
 		(a) approximations of integral
 
 Section to prove claim 1:																												Dani
-(0) Discuss where we get Ariane 5 data
-(1) Plot Gurfil vs Wardw vs NonAve vs Ariane 5; Ariane 5 IC; a(t), e(t), i(t)
+(1) Plot Gurfil vs Wardw vs NonAve; GTO IC; a(t), e(t), i(t)
 	different because:
 		(a) Drag is a function of relative velocity. Without atmospheric rotation, we just have absolute velocity.
 (2) Plot Gurfil vs Wardw; prograde and retrograde orbits IC; a_pro(t), a_ret(t)
+
+%Section to prove claim 1:																												Dani
+%(0) Discuss where we get Ariane 5 data
+%(1) Plot Gurfil vs Wardw vs NonAve vs Ariane 5; Ariane 5 IC; a(t), e(t), i(t)
+%	different because:
+%		(a) Drag is a function of relative velocity. Without atmospheric rotation, we just have absolute velocity.
+%(2) Plot Gurfil vs Wardw; prograde and retrograde orbits IC; a_pro(t), a_ret(t)
 
 Section to prove claim 2:																												Sandeep
 (1) Plot Wardw terms; Ariane 4; rho(\beta a e), I0(\beta a e), I1(\beta a e) , and I2(\beta a e)

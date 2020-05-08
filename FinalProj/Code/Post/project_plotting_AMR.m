@@ -2,6 +2,17 @@
 %                                         Plot results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+t_integrator = wardw{idx,1}(:,1);
+a = wardw{idx,1}(:,2);
+inc = wardw{idx,1}(:,3);
+raan = wardw{idx,1}(:,4);
+argp = wardw{idx,1}(:,5);
+e = wardw{idx,1}(:,6);
+rp = a.*(1-e);                              % Radius of perigee
+hp = rp-Re;                                 % Perigee altitude
+ra = (2*a-rp);                              % Radius of apogee
+ha = ra-Re;                                 % Apogee altitude
+
 t_plot = (((t_integrator/60)/60)/24)/365;
 strvec = {'k','--k',':k','k','--k',':k'};
 str = strvec{idx};
@@ -54,19 +65,19 @@ f = figure(count + 6);
 f.Units = 'centimeters';
 f.Position = picscale*[21 1 18 12];
 plot(t_plot,hp*1e-3,str,'linewidth',1); grid on; hold on
-xlabel('Elapsed time (yrs)'); ylabel('h_p (km)');
+xlabel('Elapsed time (yrs)'); ylabel('Perigee Altitude, h_p (km)');
 xlim([0 no_yrs]);
 
 f = figure(count + 7);
 f.Units = 'centimeters';
 f.Position = picscale*[42 26 18 12];
 plot(t_plot,ha*1e-3,str,'linewidth',1); grid on; hold on
-xlabel('Elapsed time (yrs)'); ylabel('h_a (km)');
+xlabel('Elapsed time (yrs)'); ylabel('Apogee Altitude, h_a (km)');
 xlim([0 no_yrs]);
 
-f = figure(count + 8);
-f.Units = 'centimeters';
-f.Position = picscale*[42 13.5 18 12];
-plot(t_plot,H*1e-6,str,'linewidth',1); grid on; hold on
-xlabel('Elapsed time (yrs)'); ylabel('H (km^2/s)');
-xlim([0 no_yrs]);
+% f = figure(count + 8);
+% f.Units = 'centimeters';
+% f.Position = picscale*[42 13.5 18 12];
+% plot(t_plot,H*1e-6,str,'linewidth',1); grid on; hold on
+% xlabel('Elapsed time (yrs)'); ylabel('H (km^2/s)');
+% xlim([0 no_yrs]);

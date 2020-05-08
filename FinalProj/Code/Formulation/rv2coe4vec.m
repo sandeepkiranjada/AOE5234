@@ -10,7 +10,7 @@ Hmag = (sum(H.^2,2)).^(1/2);        % Calculate magnitude of H
 k = repmat([0, 0, 1],length(r),1);  % Unit vector in the z-direction for ECI
 n = cross(k,H,2);                   % Line of nodes vector pointing in the direction of the ascending node
 n_mag = (sum(n.^2,2)).^(1/2);       % Calculate magnitude of n
-n = n./n_mag;                       % Line of nodes vector pointing in the direction of the ascending node
+n = n./n_mag;                       % Line of nodes unit vector pointing in the direction of the ascending node
 eps = 0.5*vmag.^2 - muu./rmag;      % Specific mechanical energy [DU^2/TU^2]
 %
 % (1) Eccentricity

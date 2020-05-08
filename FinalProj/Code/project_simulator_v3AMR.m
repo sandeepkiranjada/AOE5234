@@ -4,8 +4,8 @@
 
 clc; clear
 close all
-flag_save_matfile = 1;
-flag_save_figs = 0;
+flag_save_matfile = 0;
+flag_save_figs = 1;
 addpath('./Formulation');
 addpath('./Perturbations v1')
 addpath('./Data')
@@ -16,9 +16,9 @@ tic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                             Set up flags for which simulations to run
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-flag_gurfil = 1;    % Gurfil
+flag_gurfil = 0;    % Gurfil
 flag_wardw  = 1;    % Ward wa = we
-flag_ward0  = 1;    % Ward wa = 0
+flag_ward0  = 0;    % Ward wa = 0
 flag_naw    = 0;    % Non-averaged wa = we
 flag_na0    = 0;    % Non-averaged wa = 0
 flags = {'flag_gurfil','flag_wardw','flag_ward0','flag_naw','flag_na0'};
@@ -43,12 +43,12 @@ PC = DE430Coeff;
 %                                Spacecraft Initial Conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% noradID = 'Gurfil';     no_yrs = 10;3;   % Gurfil
+noradID = 'Gurfil';     no_yrs = 10;3;   % Gurfil
 % noradID = '00049';      no_yrs = 05;   % Echo 1A (LEO)
 % noradID = '02253';      no_yrs = 51;   % PAGEOS-A (Polar)
 % noradID = '02324';      no_yrs = 11;   % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      no_yrs = 03;   % Ariane 1
-noradID = '16657';      no_yrs = 05;   % Ariane 3 R/B
+% noradID = '16657';      no_yrs = 05;   % Ariane 3 R/B
 % noradID = '19218';      no_yrs = 06;   % Ariane 44LP R/B
 % noradID = '37239';      no_yrs = 04;10;   % Ariane 5 R/B
 
@@ -63,8 +63,8 @@ switch noradID
         IC02324   
     case '11659'  % Ariane 1
         IC11659  
-    case '16657'  % Ariane 3 R/B
-        IC16657   
+%     case '16657'  % Ariane 3 R/B
+%         IC16657   
     case '19218'  % Ariane 44LP R/B
         IC19218
     case '37239'  % Ariane 5 R/B
@@ -125,28 +125,11 @@ avg_flag = 1;
 %
 %   atm drag   lunisolar   J2
 % [   1/0         1/0      1/0 ]
-pert_fac = [1 1 1]; 
+pert_fac = [1 0 0]; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                           Numerically integrate equations of motion
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% ---------------------------------------------------------------------------------------------- %
-%                                             G--urfil                                             %
-% -------------------------------------------------------------------------------------------- %
-if flag_gurfil
-    %
-    % Define drag model: (1) for Gurfil, (2) for Ward
-    drag_model = 1;
-    %
-    % Run numerical integrator
-    [t_integrator,xx] = ode113(@(t,x) project_function(t,x,delta,wa,rho_p0,r_p0,H_p0,avg_flag,drag_model,...
-                                                        Mjd_UTC_Epoch,pert_fac,PC),tspan,x0,options);
-    %
-    % Convert integrator output 'xx' from Milankovitch elements to classical orbital elements (coe)
-    gurfil = milankovitch2coe(t_integrator,xx);
-    clear t_integrator xx
-end
 
 % ---------------------------------------------------------------------------------------------- %
 %                                        Ward: v_atm = we                                        %
@@ -156,89 +139,58 @@ if flag_wardw
     % Define drag model: (1) for Gurfil, (2) for Ward
     drag_model = 2;
     %
-    % Run numerical integrator
+    % Run numerical integrator for different AMRs
+    AMRvec = [0.02 0.01 0.005];                 % S/m: Area to mass ratio of the spacecraft [m^2/kg]
+    wardw = cell(length(AMRvec),1);
+    for idx = 1:length(AMRvec)
+        
+    delta = 0.5*AMRvec(idx)*Cd;                         % Ballistic coefficient;
     [t_integrator,xx] = ode113(@(t,x) project_function(t,x,delta,wa,rho_p0,r_p0,H_p0,avg_flag,drag_model,...
                                                         Mjd_UTC_Epoch,pert_fac,PC),tspan,x0,options);
     %
     % Convert integrator output 'xx' from Milankovitch elements to classical orbital elements (coe)
-    wardw = milankovitch2coe(t_integrator,xx);
+    wardw{idx} = milankovitch2coe(t_integrator,xx);
+    %
+    % Plot results
+    project_plotting_AMR
+    
     clear t_integrator xx
+    
+    end
 end
 
-% ---------------------------------------------------------------------------------------------- %
-%                                         Ward: v_atm = 0                                        %
-% ---------------------------------------------------------------------------------------------- %
-if flag_ward0
-    %
-    % Define drag model: (1) for Gurfil, (2) for Ward
-    drag_model = 2;
-    %
-    % Run numerical integrator                                   v--- wa = v_atm = 0
-    [t_integrator,xx] = ode113(@(t,x) project_function(t,x,delta,0,rho_p0,r_p0,H_p0,avg_flag,drag_model,...
-                                                        Mjd_UTC_Epoch,pert_fac,PC),tspan,x0,options);
-    %
-    % Convert integrator output 'xx' from Milankovitch elements to classical orbital elements (coe)
-    ward0 = milankovitch2coe(t_integrator,xx);
-    clear t_integrator xx
-end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                         Define Legend
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% ---------------------------------------------------------------------------------------------- %
-%                                    Non-averaged: v_atm = we                                    %
-% ---------------------------------------------------------------------------------------------- %
-if flag_naw
-    %
-    % Define initial values for integrator as [r0 ; v0]
-    x0 = [r0;v0];
-    %
-    % Run numerical integrator 
-    [t,x] = ode113(@(t,x) nonave(t,x,AMR,Cd,r_p0,rho_p0,H_p0,Mjd_UTC_Epoch,pert_fac,wa,PC),tspan,x0,options); 
-    %
-    % Convert integrator output 'x' from [r;v] to classical orbital elements (coe), and save to naw
-    [ecc_p,a_p,incl_p,omega_p,argp_p,nu_p,p_p,eps_p] = rv2coe4vec(x(:,1:3),x(:,4:6),mu_earth);
-    naw = [t,a_p,rad2deg(incl_p),rad2deg(omega_p),rad2deg(argp_p),ecc_p,nu_p,p_p,eps_p];
-    clear t x
-end
-
-% ---------------------------------------------------------------------------------------------- %
-%                                    Non-averaged: v_atm = 0                                     %
-% ---------------------------------------------------------------------------------------------- %
-if flag_na0
-    %
-    % Define initial values for integrator as [r0 ; v0]
-    x0 = [r0;v0];
-    %
-    % Run numerical integrator                                                      v--- wa = v_atm = 0
-    [t,x] = ode113(@(t,x) nonave(t,x,AMR,Cd,r_p0,rho_p0,H_p0,Mjd_UTC_Epoch,pert_fac,0,PC),tspan,x0,options); 
-    %
-    % Convert integrator output 'x' from [r;v] to classical orbital elements (coe), and save to naw
-    [ecc_p,a_p,incl_p,omega_p,argp_p,nu_p,p_p,eps_p] = rv2coe4vec(x(:,1:3),x(:,4:6),mu_earth);
-    na0 = [t,a_p,rad2deg(incl_p),rad2deg(omega_p),rad2deg(argp_p),ecc_p,nu_p,p_p,eps_p];
-    clear t x
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                           Plot Figures
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-project_plotting_GurfWardReal
-% project_plotting_from_scratch
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                        Save Images
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 q = get(0,'children');
-
 for f = 1:length(q)
     figure(f);
+    grid on
+    
+    %%% Modify properties of figures for aesthetics  
+    set(findall(gcf,'Type','line'),'LineWidth',1)
     set(gca,'FontSize',12);
-    if strcmp(noradID,'Gurfil')
-        figname = sprintf(['GurfWardNoAve' noradID ' ' num2str(no_yrs) 'yrs ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
-    else
-        figname = sprintf(['GurfWardNoAveReal' noradID ' ' num2str(no_yrs) 'yrs ' num2str(pert_fac) ' Figure ' num2str(length(q)+1-f)]);
+        legend('AMR = 0.02 m^2/kg','AMR = 0.01 m^2/kg','AMR = 0.005 m^2/kg','Location','Best')
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                        Save Images
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Define string of perturbations
+str_whichprts = [1*pert_fac(1); 2*pert_fac(2); 3*pert_fac(3)];
+str_whichprts = str_whichprts(str_whichprts~=0);
+str_prts_all = {'drag','lunisolar','J2'};
+str2 = strjoin(str_prts_all(str_whichprts));
+if flag_save_figs == 1
+    for f = 1:length(q)
+        figure(f);
+        figname = sprintf(['AMR Wardw ' str2 ' Figure ' num2str(length(q)+1-f,'%01.0f')]);
+        print(q(f),fullfile(pwd,'Figures/Ward AMR',figname),'-dpng','-r300');
     end
-    if flag_save_figs == 1
-        print(q(f),fullfile(pwd,'Figures',figname),'-dpng','-r300');
-        savefig(q(f),fullfile(pwd,'Figures',figname));
-    end
+    
+else
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -270,9 +222,3 @@ end
 
 toc
 
-% ODE Stop Condition
-function [value, isterminal, direction] = myEvent(t, x)
-value      = (([x(1);x(2);x(3)]'*[x(1);x(2);x(3)])^0.5 < 6478137);
-isterminal = 1;   % Stop the integration
-direction  = 0;
-end
