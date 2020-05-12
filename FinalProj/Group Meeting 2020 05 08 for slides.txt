@@ -1,0 +1,93 @@
+Presentation Outline
+---------------------------------- Ali --------------------------------------
+[ ] Motivation
+[ ] Prior Work
+[ ] Combine Objectives and Research Scope Slides
+[ ] Non-Averaged Equations for Perturbed Circumterrestrial Dynamics
+	Eq. (1)-(2), (3), (4), (7)
+[ ] Non-Average vs Averaged Plots 
+	Figure 1 and 2
+--------------------------------- Sandeep -------------------------------------
+[ ] Averaged Equations
+	Eq. (11) or (12), (26)-(27),
+	J2, luni-solar, drag 
+[ ] Averaged Drag with Still Atmosphere
+	Eq. (16)-(17)
+[ ] Averaged Drag with Rotating Atmosphere
+	Eq. (24)-(25)
+[ ] Numerical Stability Analysis of Formulation 2
+	Eq (29), (30)
+	Figure 7 
+	Eq (32)
+---------------------------------- Dani ----------------------------------------
+[/] Simulation for Drag Only
+	[ ] Explain why GTO
+	[ ] GTO IC
+	[/] Figure 2
+	[/] Figure 3
+[/] Simulation for All Perts
+		Figure 4
+[/] 	Figure 5-6
+	* Mention accounting for time-varying AMR
+[ ] Conclusions and Future Work
+	Screenshot of first page of the paper
+Backup Slides
+[ ] Comparison to real data
+--------------------------------- Sandeep -------------------------------------
+[ ] Shortcomings of our current simulation capabilities which we'll address in future work
+	LEO is going to be very challenging for a number of reasons, but certainly you now have a case 	of a nearly circular orbit, and perhaps this gives some numerical troubles (i.e., singularities) 	for Ward (I'm willing to bet this is the case ... e.g., that Wang is not valid for e = 0)
+
+______________________________________________________________________________________________________
+
+After the presentation/ before paper submission:
+[ ] Once approximations and singularity issues are resolved, a wider orbital element parameter space could be explored and more comparisons made
+[ ] see how a. J2 + lunisolar only, b. drag only, c. full (assuming this is lunisolar + J2 + drag)
+[ ] More sims
+	Wardw vs NA for e; fix hp, vary ha; IC GTO
+	Wardw vs NA for inc; IC GTO
+
+---------------------------------- Dani ----------------------------------------
+[ ] Add to paper
+	Formulation 1 is unstable for small eccentricities.
+	Due to this problem we limit our scope to highly eccentric orbits.
+[ ] Add to paper
+	Once approximations and singularity issues are resolved, a wider orbital element parameter space 	could be explored and more comparisons made
+[ ] Produce new Ariane 5 plots all perts
+[ ] Produce new Ariane 5 plots drag only
+
+---------------------------------- Ali --------------------------------------
+Question: What was the force model considered ? Lunisolar + J2 + Drag ? 
+Question: Why did you decide not to include the red curve in this case ?
+Question: Could you explain how you're obtaining the A/m, Cr, Cd ?  
+[ ] In response to 2) We've decrease AMR to 1/3 and still we couldn't match the TLE
+[ ] Send plots of modified AMR results comparison with real data
+[ ] Send Dani NA with vatm = 0 for Ariane 5 all perts
+[ ] Send Dani NA with vatm = 0 for Ariane 5 drag only
+[ ] Address his comment: "I can also see that your A/m is certainly inflated as your non-averaged evolution decays while the object is still in orbit (according to TLEs) for the elapsed 11-year period. Given that the object is a sphere ( good choice, btw ), you should in principle be able to nail down the object's properties in order to do a better prediction."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   

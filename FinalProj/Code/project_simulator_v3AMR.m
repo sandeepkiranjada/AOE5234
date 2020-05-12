@@ -6,11 +6,11 @@ clc; clear
 close all
 flag_save_matfile = 0;
 flag_save_figs = 1;
+addpath('./Initial Conditions')
 addpath('./Formulation');
-addpath('./Perturbations v1')
+addpath('./Perturbations')
 addpath('./Data')
 addpath('./Post')
-addpath('./../No-Averaged/Matlab codes')
 tic
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -43,14 +43,14 @@ PC = DE430Coeff;
 %                                Spacecraft Initial Conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-noradID = 'Gurfil';     no_yrs = 10;3;   % Gurfil
+noradID = 'Gurfil';     no_yrs = 10;   % Gurfil
 % noradID = '00049';      no_yrs = 05;   % Echo 1A (LEO)
 % noradID = '02253';      no_yrs = 51;   % PAGEOS-A (Polar)
 % noradID = '02324';      no_yrs = 11;   % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      no_yrs = 03;   % Ariane 1
 % noradID = '16657';      no_yrs = 05;   % Ariane 3 R/B
 % noradID = '19218';      no_yrs = 06;   % Ariane 44LP R/B
-% noradID = '37239';      no_yrs = 04;10;   % Ariane 5 R/B
+% noradID = '37239';      no_yrs = 04;   % Ariane 5 R/B
 
 switch noradID
     case 'Gurfil'
@@ -142,37 +142,44 @@ if flag_wardw
     % Run numerical integrator for different AMRs
     AMRvec = [0.02 0.01 0.005];                 % S/m: Area to mass ratio of the spacecraft [m^2/kg]
     wardw = cell(length(AMRvec),1);
+    %
     for idx = 1:length(AMRvec)
         
-    delta = 0.5*AMRvec(idx)*Cd;                         % Ballistic coefficient;
-    [t_integrator,xx] = ode113(@(t,x) project_function(t,x,delta,wa,rho_p0,r_p0,H_p0,avg_flag,drag_model,...
-                                                        Mjd_UTC_Epoch,pert_fac,PC),tspan,x0,options);
-    %
-    % Convert integrator output 'xx' from Milankovitch elements to classical orbital elements (coe)
-    wardw{idx} = milankovitch2coe(t_integrator,xx);
-    %
-    % Plot results
-    project_plotting_AMR
-    
-    clear t_integrator xx
-    
-    end
-end
+        delta = 0.5*AMRvec(idx)*Cd;                         % Ballistic coefficient;
+        [t_integrator,xx] = ode113(@(t,x) project_function(t,x,delta,wa,rho_p0,r_p0,H_p0,avg_flag,drag_model,...
+            Mjd_UTC_Epoch,pert_fac,PC),tspan,x0,options);
+        %
+        % Convert integrator output 'xx' from Milankovitch elements to classical orbital elements (coe)
+        wardw{idx} = milankovitch2coe(t_integrator,xx);
+        %
+        % Plot results
+        project_plotting_AMR
+        
+        clear t_integrator xx
 
+        legendstr{idx} = sprintf(['AMR = ' num2str(AMRvec(idx),'%.3f') ' m^2/kg']);
+    end
+    
+end
+legend(legendstr,'Location','Best')
+legendstr{idx+1} = 'TLE';
+% %{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                         Define Legend
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% 
 q = get(0,'children');
+q = flip(q);
 for f = 1:length(q)
     figure(f);
     grid on
-    
     %%% Modify properties of figures for aesthetics  
-    set(findall(gcf,'Type','line'),'LineWidth',1)
-    set(gca,'FontSize',12);
-        legend('AMR = 0.02 m^2/kg','AMR = 0.01 m^2/kg','AMR = 0.005 m^2/kg','Location','Best')
+    legend(legendstr,'Location','SouthWest')
+    set(gca,'FontSize',12);      
+    set(gcf,'color','w');
 end
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                        Save Images
@@ -185,11 +192,21 @@ str_prts_all = {'drag','lunisolar','J2'};
 str2 = strjoin(str_prts_all(str_whichprts));
 if flag_save_figs == 1
     for f = 1:length(q)
-        figure(f);
+        h = figure(f);
         figname = sprintf(['AMR Wardw ' str2 ' Figure ' num2str(length(q)+1-f,'%01.0f')]);
-        saveas(q(f),fullfile(pwd,'Figures/Ward AMR/EPS',figname),'epsc'); % Save as .eps file
-        print(q(f),fullfile(pwd,'Figures/Ward AMR/PNG',figname),'-dpng','-r300'); % Save as bitmap file
-        savefig(q(f),fullfile(pwd,'Figures/Ward AMR/FIG',figname));               % Save as Matlab figure
+        % Save wide figure
+        saveas(f,fullfile(pwd,'Figures/Ward AMR/EPS',figname),'epsc');           % Save as .eps file
+        print(f,fullfile(pwd,'Figures/Ward AMR/PNG',figname),'-dpng','-r300');   % Save as bitmap file
+        savefig(f,fullfile(pwd,'Figures/Ward AMR/FIG',figname));                 % Save as Matlab figure
+        clear figname
+        % Save extra wide figure
+        h.Position = [1 1 28 10];
+        legend(legendstr,'Location','SouthWest')
+        figname = sprintf(['AMR Wardw ' str2 ' Figure ' num2str(length(q)+1-f,'%01.0f') 'b']);
+        saveas(f,fullfile(pwd,'Figures/Ward AMR/EPS',figname),'epsc');           % Save as .eps file
+        print(f,fullfile(pwd,'Figures/Ward AMR/PNG',figname),'-dpng','-r300');   % Save as bitmap file
+        savefig(f,fullfile(pwd,'Figures/Ward AMR/FIG',figname));                 % Save as Matlab figure
+        
     end
     
 else
@@ -224,3 +241,4 @@ end
 
 toc
 
+% %}

@@ -22,9 +22,9 @@ project_constants
 % Gurfil
 %
 ICGURFIL
-filename = 'Gurfil Wardw Ward0 IC_Gurfil 10yrs 1  0  0 data'; load(filename);          % Ave    Drag only
+% filename = 'Gurfil Wardw Ward0 IC_Gurfil 10yrs 1  0  0 data'; load(filename);          % Ave    Drag only
 % filename = 'Gurfil Wardw Ward0 NAw NA0 IC_Gurfil 10yrs 1  1  1 data'; load(filename); % Ave,NA All perturbations
-% filename = 'Gurfil Wardw Ward0 NAw NA0 IC_Gurfil 10yrs 1  1  1 data'; load(filename);flag_na0 = 0; % Ave,NA All perturbations
+filename = 'Gurfil Wardw Ward0 NAw NA0 IC_Gurfil 10yrs 1  1  1 data'; load(filename);flag_na0 = 0; % Ave,NA All perturbations
 % filename = 'Gurfil Wardw Ward0 NAw NA0 IC_Gurfil 10yrs 1  1  1 data'; load(filename);flag_ward0 = 0; flag_na0 = 0; % Ave,NA All perturbations
 
 % IC02253
@@ -45,6 +45,11 @@ filename = 'Gurfil Wardw Ward0 IC_Gurfil 10yrs 1  0  0 data'; load(filename);   
 % naw = [t,a_p,incl_p,omega_p,argp_p,ecc_p,nu_p];
 % % filename = 'Gurfil Wardw Ward0 Real IC_37239 10yrs 1  0  0 data'; load(filename); clear realdata % Just Drag 
 
+%
+% '37239' Ariane 5 R/B Modified
+%
+% IC37239mod
+% load('Gurfil Wardw Ward0 Real IC_37239 mod 4yrs 1  1  1 data.mat');
 
 %{
 Input: 
@@ -130,7 +135,7 @@ str_legend = str_legend_all(str_whichleg);
 %
 f = figure(1);
 f.Units = 'centimeters';
-f.Position = picscale*[1 22 18 12];
+f.Position = picscale*[1 22 16 12];
 if flag_naw,               plot(t_naw,naw(:,2)*1e-3,           linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,2)*1e-3,           linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_gurfil,            plot(t_gurfil,gurfil(:,2)*1e-3,     linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3),'MarkerIndices',[50:100:3000,3000:150:length(t_gurfil)],'MarkerSize',mrkrvec(3),'MarkerFaceColor',colrvec(3,:)); hold on; end
@@ -147,7 +152,7 @@ legend(str_legend);
 %
 f = figure(2);
 f.Units = 'centimeters';
-f.Position = picscale*[1 13.5 18 12];
+f.Position = picscale*[1 13.5 16 12];
 if flag_naw,               plot(t_naw,naw(:,6),                 linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,6),                 linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_gurfil,            plot(t_gurfil,gurfil(:,6),           linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3),'MarkerIndices',[50:100:3000,3000:150:length(t_gurfil)],'MarkerSize',mrkrvec(3),'MarkerFaceColor',colrvec(3,:)); hold on; end
@@ -164,8 +169,7 @@ legend(str_legend);
 %
 f = figure(3);
 f.Units = 'centimeters';
-% f.Position = picscale*[1 1 10 12];
-f.Position = picscale*[1 1 18 12];
+f.Position = picscale*[1 1 16 12];
 if flag_naw,               plot(t_naw,naw(:,3),                         linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,3),                         linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_gurfil,            plot(t_gurfil,gurfil(:,3),                   linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3),'MarkerIndices',[50:100:3000,3000:150:length(t_gurfil)],'MarkerSize',mrkrvec(3),'MarkerFaceColor',colrvec(3,:)); hold on; end
@@ -183,8 +187,7 @@ legend(str_legend,'Location','Best');
 %
 f = figure(4);
 f.Units = 'centimeters';
-% f.Position = picscale*[10 1 10 12];
-f.Position = picscale*[10 1 18 12];
+f.Position = picscale*[10 1 16 12];
 if flag_naw,               plot(t_naw,naw(:,5),                         linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,5),                         linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_gurfil,            plot(t_gurfil,gurfil(:,5),                   linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3),'MarkerIndices',[50:100:3000,3000:150:length(t_gurfil)],'MarkerSize',mrkrvec(3),'MarkerFaceColor',colrvec(3,:)); hold on; end
@@ -201,8 +204,7 @@ legend(str_legend,'Location','Best');
 %
 f = figure(5);
 f.Units = 'centimeters';
-% f.Position = picscale*[20 1 10 12];
-f.Position = picscale*[20 1 18 12];
+f.Position = picscale*[20 1 16 12];
 if flag_naw,               plot(t_naw,naw(:,4),                         linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,4),                         linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_gurfil,            plot(t_gurfil,gurfil(:,4),                   linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3),'MarkerIndices',[50:100:3000,3000:150:length(t_gurfil)],'MarkerSize',mrkrvec(3),'MarkerFaceColor',colrvec(3,:)); hold on; end
@@ -245,11 +247,11 @@ for f = 1:length(q)
             savefig(h,fullfile(pwd,'Figures',foldername,'/FIG',figname));               % Save as Matlab figure
             clear figname
             % Save narrow version
-            h.Position = picscale*[10 1 10 12];
-            % legend(str_legend,'Location','Best');
+            h.Position = picscale*[10 1 11 12];
+            legend(str_legend,'Location','Best');
             figname = sprintf([str1 ' ' str2 ' ' noradID ' Figure ' num2str(f) 'b']);
             saveas(h,fullfile(pwd,'Figures',foldername,'/EPS',figname),'epsc');            % Save as .eps file
-            % print(h,fullfile(pwd,'Figures',foldername,'/PNG',figname),'-dpng','-r300'); % Save as bitmap file
+            print(h,fullfile(pwd,'Figures',foldername,'/PNG',figname),'-dpng','-r300'); % Save as bitmap file
             % savefig(h,fullfile(pwd,'Figures',foldername,'/FIG',figname));               % Save as Matlab figure
             clear figname
         end

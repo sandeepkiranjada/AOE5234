@@ -4,13 +4,13 @@
 
 clc; clear
 close all
-flag_save_matfile = 1;
+flag_save_matfile = 0;
 flag_save_figs = 0;
+addpath('./Initial Conditions')
 addpath('./Formulation');
-addpath('./Perturbations v1')
+addpath('./Perturbations')
 addpath('./Data')
 addpath('./Post')
-addpath('./../No-Averaged/Matlab codes')
 tic
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -43,14 +43,16 @@ PC = DE430Coeff;
 %                                Spacecraft Initial Conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% noradID = 'Gurfil';     no_yrs = 10;3;   % Gurfil
+noradID = 'Gurfil';     no_yrs = 10;3;   % Gurfil
 % noradID = '00049';      no_yrs = 05;   % Echo 1A (LEO)
 % noradID = '02253';      no_yrs = 51;   % PAGEOS-A (Polar)
 % noradID = '02324';      no_yrs = 11;   % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      no_yrs = 03;   % Ariane 1
-noradID = '16657';      no_yrs = 05;   % Ariane 3 R/B
+% noradID = '16657';      no_yrs = 05;   % Ariane 3 R/B
 % noradID = '19218';      no_yrs = 06;   % Ariane 44LP R/B
-% noradID = '37239';      no_yrs = 04;10;   % Ariane 5 R/B
+% noradID = '37239';      no_yrs = 04;   % Ariane 5 R/B
+% noradID = '37239 mod';  no_yrs = 1/200;04;   % Ariane 5 R/B Mod
+% noradID = 'ICLEO';      no_yrs = 2;    %LEO
 
 switch noradID
     case 'Gurfil'
@@ -68,7 +70,11 @@ switch noradID
     case '19218'  % Ariane 44LP R/B
         IC19218
     case '37239'  % Ariane 5 R/B
-        IC37239    
+        IC37239
+    case '37239 mod'
+        IC37239mod
+    case 'ICLEO'
+        ICLEO
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,7 +138,7 @@ pert_fac = [1 1 1];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % ---------------------------------------------------------------------------------------------- %
-%                                             G--urfil                                             %
+%                                             Gurfil                                             %
 % -------------------------------------------------------------------------------------------- %
 if flag_gurfil
     %
