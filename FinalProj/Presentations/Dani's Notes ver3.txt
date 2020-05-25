@@ -1,0 +1,68 @@
+Slide 13:
+Now that we have all pertinent equations, we move onto the comparison of these drag models through simulation. 
+Given the numerical issues discussed, 
+We’ve chosen to focus on Geosynchronous Transfer Orbits (GTOs)
+These initial conditions are for a typical mission profile of Ariane 5, an upper stage rocket
+... <refer to figure> GTOs are utilized for transferring satellites from a circular LEO to GEO.
+For this reason, GTOs are highly eccentric orbits
+We want to analyze the effects of atmospheric drag on spent rocket stages left uncontrolled at GTO.
+In this preliminary analysis, we perform simulations specifically for objects in GTO.
+In future work, we will extend this to other orbital regimes.
+
+Slide 14:
+These are the results considering atmospheric drag only.
+We have the time history of the semi-major axis and eccentricity over a decade.
+Both of which are decreasing which means the orbit is shrinking as a decreases, AND getting more circular as e decreases.
+The results for Formulation 1 is the thick gray line
+...Fomulation 2 is the dotten black line
+... and we also show the results for Formulation 2 when v_atm is set to 0 as the dashed black line,
+which we can see overlapping with Formulation 1.
+Lines corresponding to zero atmospheric velocity, have a higher slope.
+This implies that neglecting atmospheric rotation causes the orbit to decay faster for this set of initial conditions.
+The time difference for when both orbits decay to 19,000km is 1 year.
+We can extrapolate that lifetime prediction discrepancies would be even larger after 10 years.
+To understand this we can think of drag as delta-v in the direction anti-parallel to the relative velocity between spacecraft and atmosphere.
+If we consider a still atmosphere, all the drag force would be in the anti-velocity direction.
+If we consider a rotating atmosphere, the drag force would have components outside of the orbit plane...
+click
+
+Slide 15:
+...which is what we see here with inclination and right ascension of the ascending node.
+The secular variations are small and slow as we can see on the y-axis, but they would not be negligibile over long time periods.
+We also see that Formulation 1 and Formulation 2 with atmospheric velocity set to zero are still equivalent.
+
+Slide 16:
+Using the same initial conditions as before, we now consider drag with J2, and luni-solar perturbations,
+and compare the averaged formulations with the non-averaged dynamics, which we consider to be our reference orbit. 
+From left to right we're showing semi-major axis, eccentricity, and inclination.
+The non-averaged dynamics are shown as the solid black line, and the rest are represented the same way.
+The linear trends we saw before are now superposed with oscillations from the added perturbations, specifically luni-solar.
+The main takeaways here are that... 
+click
+Formulation 2 is closest to the non-averaged dynamics.
+AND Formulation 1 is equivalent to Formulation 2 when atmospheric velocity is set to 0, and there are no numerical issues.
+With that in mind, we proceed with just Formulation 2.
+
+Slide 17:
+In our simulations we use a constant value for the area-to-mass ratio, while in reality, space objects could be tumbling, in which case the area-to-mas ratio will be time-varying.
+So, it is useful to look at a range of AMRs.
+Using the same initial conditons we look at Formulation 2 with varying AMR
+We see the same trend as before for an orbit that is shrinking and getting more circular.
+From solid to dashed, to dotted, we have decreasing values of AMR.
+As we expect, higher AMRs incur higher drag force, and these orbits decay faster.
+On the bottom we see the perigee altitude fluctuating around the initial value of 250 km,
+while the apogee altitude is steadily decreasing.
+This is because the drag force is higher at perigee, which brings the apogee closer to the original focus.
+These plots show that a slight change in AMR can change the lifetime prediction dramatically.
+This is why our next step...
+
+Slide 18:
+...if our paper abstract gets accepted to Ascend, is to compare our simulations to real data. 
+Which we've found to be a non-trivial task.
+In conclusion,
+(C)... definitely...
+(1)... but...
+(2)... is .. but is...
+... as we saw before with the exponential and Bessel's function terms approaching zero and infinitiy respectively.
+(F) 
+(I) Both formulations have shortcomings, and we propose an ideal model where formulation 2 is combined with our ...

@@ -6,9 +6,11 @@ clc
 clear
 % close all
 flag_save = 0;
-addpath('./Perturbations v1')
+addpath('./Initial Conditions')
+addpath('./Formulation');
+addpath('./Perturbations')
 addpath('./Data')
-addpath('./../No-Averaged/Matlab codes')
+addpath('./Post')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                  Define Global Variables

@@ -6,8 +6,11 @@ clc
 clear
 close all
 flag_save = 0;
+addpath('./Initial Conditions')
+addpath('./Formulation');
 addpath('./Perturbations')
-addpath('./../No-Averaged/Matlab codes')
+addpath('./Data')
+addpath('./Post')
 global PC eopdata
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
