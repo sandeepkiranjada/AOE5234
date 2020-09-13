@@ -5,7 +5,7 @@ function  [dxdt] = project_function(t,x,delta,wa,rho_p0,r_p0,H_p0,avg_flag,drag_
 if drag_model == 1
     dxdt_drag = atmdrag_gurfil(x,delta,rho_p0,r_p0,H_p0);
 elseif  drag_model == 2
-    dxdt_drag = atmdrag_ward(x,delta,wa,rho_p0,r_p0,H_p0);
+    dxdt_drag = atmdrag_ward_lim(x,delta,wa,rho_p0,r_p0,H_p0);
 else
     error('Incorrect Value drag model. Set drag_model to: 1, or 2')
 end
