@@ -19,7 +19,7 @@ tic
 flag_gurfil = 1;    % Gurfil
 flag_wardw  = 1;    % Ward wa = we
 flag_ward0  = 1;    % Ward wa = 0
-flag_naw    = 0;    % Non-averaged wa = we
+flag_naw    = 1;    % Non-averaged wa = we
 flag_na0    = 0;    % Non-averaged wa = 0
 flags = {'flag_gurfil','flag_wardw','flag_ward0','flag_naw','flag_na0'};
 
@@ -51,7 +51,7 @@ PC = DE430Coeff;
 % noradID = '16657';      no_yrs = 05;   % Ariane 3 R/B
 % noradID = '19218';      no_yrs = 06;   % Ariane 44LP R/B
 % noradID = '37239';      no_yrs = 04;   % Ariane 5 R/B
-noradID = '37239 mod';  no_yrs = 04;   % Ariane 5 R/B Mod
+noradID = '37239 mod';  no_yrs = 15;   % Ariane 5 R/B Mod
 % noradID = 'ICLEO';      no_yrs = 2;    %LEO
 
 switch noradID
