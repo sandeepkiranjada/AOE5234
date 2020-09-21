@@ -22,8 +22,8 @@ Mjd_UTC_Epoch = Mjday(realdata(line_no,1),realdata(line_no,2),...
 %
 % Spacecraft properties
 %
-Cd = 1.67;                                  % Drag coefficient of the spacecraft
-AMR = 0.0153;                               % S/m: Area to mass ratio of the spacecraft [m^2/kg]
+Cd = 2.12;1.67;                                  % Drag coefficient of the spacecraft
+AMR = 0.005;0.0153;                               % S/m: Area to mass ratio of the spacecraft [m^2/kg]
                                             % http://www.spacelaunchreport.com/ariane5.html
 delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
 

@@ -54,7 +54,7 @@ str_legend = str_legend_all(str_whichleg);
 %
 f = figure(1);
 f.Units = 'centimeters';
-f.Position = picscale*[1 22 18 12];
+% f.Position = picscale*[1 22 18 12];
 if flag_naw,               plot(t_naw,naw(:,2)*1e-3,           linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,2)*1e-3,           linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_wardw,             plot(t_wardw,wardw(:,2)*1e-3,       linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3));  hold on; end
@@ -71,7 +71,7 @@ legend(str_legend);
 %
 f = figure(2);
 f.Units = 'centimeters';
-f.Position = picscale*[1 13.5 18 12];
+% f.Position = picscale*[1 13.5 18 12];
 if flag_naw,               plot(t_naw,naw(:,6),                 linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,6),                 linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_wardw,             plot(t_wardw,wardw(:,6),             linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3));  hold on; end
@@ -88,7 +88,7 @@ legend(str_legend);
 %
 f = figure(3);
 f.Units = 'centimeters';
-f.Position = picscale*[1 1 18 12];
+% f.Position = picscale*[1 1 18 12];
 if flag_naw,               plot(t_naw,naw(:,3),                         linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,3),                         linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_wardw,             plot(t_wardw,wardw(:,3),                     linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3));  hold on; end
