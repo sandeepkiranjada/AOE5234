@@ -19,7 +19,7 @@ tic
 flag_gurfil = 1;    % Gurfil
 flag_wardw  = 1;    % Ward wa = we
 flag_ward0  = 1;    % Ward wa = 0
-flag_naw    = 0;    % Non-averaged wa = we
+flag_naw    = 1;    % Non-averaged wa = we
 flag_na0    = 0;    % Non-averaged wa = 0
 flags = {'flag_gurfil','flag_wardw','flag_ward0','flag_naw','flag_na0'};
 
