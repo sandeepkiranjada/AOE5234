@@ -49,9 +49,9 @@ PC = DE430Coeff;
 % noradID = '02324';      no_yrs = 11;   % PasComSat/OV1-8 (LEO)
 % noradID = '11659';      no_yrs = 03;   % Ariane 1
 % noradID = '16657';      no_yrs = 05;   % Ariane 3 R/B
-% noradID = '19218';      no_yrs = 06;   % Ariane 44LP R/B
+% noradID = '19218';      no_yrs = 04;   % Ariane 44LP R/B
 % noradID = '37239';      no_yrs = 04;   % Ariane 5 R/B
-noradID = '37239 mod';  no_yrs = 04;   % Ariane 5 R/B Mod
+noradID = '37239 mod';  no_yrs = 15;   % Ariane 5 R/B Mod
 % noradID = 'ICLEO';      no_yrs = 2;    %LEO
 
 switch noradID

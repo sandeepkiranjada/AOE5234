@@ -30,15 +30,16 @@ delta = 0.5*AMR*Cd;                         % Ballistic coefficient;
 %
 % Orbit properties
 %
-a0 = realdata(line_no,7)*1e3;
-i0 = realdata(line_no,8);
-raan0 = realdata(line_no,9);
-argp0 = realdata(line_no,10);
-e0 = realdata(line_no,11);
-M0 = realdata(line_no,12);
-nu0 = trueanomaly(M0,e0);
+% a0 = realdata(line_no,7)*1e3;
+% i0 = realdata(line_no,8);
+% raan0 = realdata(line_no,9);
+% argp0 = realdata(line_no,10);
+% e0 = realdata(line_no,11);
+% M0 = realdata(line_no,12);
+% nu0 = trueanomaly(M0,e0);
 r0 = realdata(line_no,13:15)';                 % Initial position vector
 v0 = realdata(line_no,16:18)';                 % Initial velocity vector
+[e0,a0,i0,raan0,argp0,nu0,~,~] = rv2coe4vec(r0',v0',mu_earth)
 r_p0 = a0*(1-e0);                              % Radius of perigee
 hp0 = r_p0-Re;                                 % Perigee altitude
 r_a0 = (2*a0-r_p0);                            % Radius of apogee

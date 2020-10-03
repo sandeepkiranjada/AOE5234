@@ -139,8 +139,8 @@ f.Position = picscale*[1 22 16 12];
 if flag_naw,               plot(t_naw,naw(:,2)*1e-3,           linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,2)*1e-3,           linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_gurfil,            plot(t_gurfil,gurfil(:,2)*1e-3,     linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3),'MarkerIndices',[50:100:3000,3000:150:length(t_gurfil)],'MarkerSize',mrkrvec(3),'MarkerFaceColor',colrvec(3,:)); hold on; end
-if flag_wardw,             plot(t_wardw,wardw(:,2)*1e-3,       linvec{4},'color',colrvec(4,:),'linewidth',linwidvec(4));  hold on; end
 if flag_ward0,             plot(t_ward0,ward0(:,2)*1e-3 ,      linvec{5},'color',colrvec(5,:),'linewidth',linwidvec(5),'MarkerIndices',[1:100:3000,3000:150:length(t_ward0)],'MarkerSize',mrkrvec(5),'MarkerFaceColor',colrvec(5,:)); hold on; end
+if flag_wardw,             plot(t_wardw,wardw(:,2)*1e-3,       linvec{4},'color',colrvec(4,:),'linewidth',linwidvec(4));  hold on; end
 if exist('realdata','var'),plot(t_real,realdata(line_no:end,7),linvec{6},'color',colrvec(6,:),'linewidth',linwidvec(6)); end
 grid on;
 xlabel('Elapsed Time (yrs)'); ylabel('Semi-major Axis, a (km)');
@@ -156,8 +156,8 @@ f.Position = picscale*[1 13.5 16 12];
 if flag_naw,               plot(t_naw,naw(:,6),                 linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,6),                 linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_gurfil,            plot(t_gurfil,gurfil(:,6),           linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3),'MarkerIndices',[50:100:3000,3000:150:length(t_gurfil)],'MarkerSize',mrkrvec(3),'MarkerFaceColor',colrvec(3,:)); hold on; end
-if flag_wardw,             plot(t_wardw,wardw(:,6),             linvec{4},'color',colrvec(4,:),'linewidth',linwidvec(4));  hold on; end
 if flag_ward0,             plot(t_ward0,ward0(:,6),             linvec{5},'color',colrvec(5,:),'linewidth',linwidvec(5),'MarkerIndices',[1:100:3000,3000:150:length(t_ward0)],'MarkerSize',mrkrvec(5),'MarkerFaceColor',colrvec(5,:)); hold on; end
+if flag_wardw,             plot(t_wardw,wardw(:,6),             linvec{4},'color',colrvec(4,:),'linewidth',linwidvec(4));  hold on; end
 if exist('realdata','var'),plot(t_real,realdata(line_no:end,11),linvec{6},'color',colrvec(6,:),'linewidth',linwidvec(6)); end
 grid on;
 xlabel('Elapsed Time (yrs)'); ylabel('Eccentricity, e');
@@ -173,8 +173,8 @@ f.Position = picscale*[1 1 16 12];
 if flag_naw,               plot(t_naw,naw(:,3),                         linvec{1},'color',colrvec(1,:),'linewidth',linwidvec(1)); hold on; end
 if flag_na0,               plot(t_na0,na0(:,3),                         linvec{2},'color',colrvec(2,:),'linewidth',linwidvec(2)); hold on; end
 if flag_gurfil,            plot(t_gurfil,gurfil(:,3),                   linvec{3},'color',colrvec(3,:),'linewidth',linwidvec(3),'MarkerIndices',[50:100:3000,3000:150:length(t_gurfil)],'MarkerSize',mrkrvec(3),'MarkerFaceColor',colrvec(3,:)); hold on; end
-if flag_wardw,             plot(t_wardw,wardw(:,3),                     linvec{4},'color',colrvec(4,:),'linewidth',linwidvec(4));  hold on; end
 if flag_ward0,             plot(t_ward0,ward0(:,3),                     linvec{5},'color',colrvec(5,:),'linewidth',linwidvec(5),'MarkerIndices',[1:100:3000,3000:150:length(t_ward0)],'MarkerSize',mrkrvec(5),'MarkerFaceColor',colrvec(5,:)); hold on; end
+if flag_wardw,             plot(t_wardw,wardw(:,3),                     linvec{4},'color',colrvec(4,:),'linewidth',linwidvec(4));  hold on; end
 if exist('realdata','var'),plot(t_real,rad2deg(realdata(line_no:end,8)),linvec{6},'color',colrvec(6,:),'linewidth',linwidvec(6)); end
 grid on;
 xlabel('Elapsed Time (yrs)'); ylabel('Inclination, i (deg)');

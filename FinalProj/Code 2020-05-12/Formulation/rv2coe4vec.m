@@ -2,12 +2,12 @@ function [e,a,inc,raan,argp,nu,p,eps] = rv2coe4vec(r,v,muu)
 %
 % Preliminary calculations
 %
-muu = repmat(muu,length(r),1);
+muu = repmat(muu,size(r,1),1);
 rmag = (sum(r.^2,2)).^(1/2);        % Calculate magnitude of r
 vmag = (sum(v.^2,2)).^(1/2);        % Calculate magnitude of v
 H = cross(r,v,2);                   % Angular momentum vector
 Hmag = (sum(H.^2,2)).^(1/2);        % Calculate magnitude of H
-k = repmat([0, 0, 1],length(r),1);  % Unit vector in the z-direction for ECI
+k = repmat([0, 0, 1],size(r,1),1);  % Unit vector in the z-direction for ECI
 n = cross(k,H,2);                   % Line of nodes vector pointing in the direction of the ascending node
 n_mag = (sum(n.^2,2)).^(1/2);       % Calculate magnitude of n
 n = n./n_mag;                       % Line of nodes unit vector pointing in the direction of the ascending node
